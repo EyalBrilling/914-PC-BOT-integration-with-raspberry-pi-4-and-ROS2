@@ -1,0 +1,6 @@
+As written in WBR_914_PC-BOT_Linux-Version.pdf : 
+1. Initiate Player with the robot config : `player –p 6665 wbr914.cfg`. Full path to the file might be needed.
+2. Active Playerv with `playerv –p 6665`
+3. `Subscribe` to the robot
+4. `enable` the robot
+5. move it.
