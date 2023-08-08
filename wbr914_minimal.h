@@ -6,6 +6,12 @@
 #include <arpa/inet.h>
 #include <cassert>
 #include <termios.h>
+#include <linux/serial.h>
+#include <sys/ioctl.h>
+
+// Default max speeds
+#define ACCELERATION_DEFAULT 100
+#define DECELERATION_DEFAULT 250
 
 /* Conenction */
 #define DEFAULT_WBR914_PORT "/dev/ttyUSB0" // Default robot port via USB
@@ -22,6 +28,14 @@
 #define UPDATE              0x1A
 #define SETMOTORMODE        0xDC
 #define SETMOTORCMD         0x77
+#define RESETEVENTSTATUS    0x34 // Reseting the driver configurations in Stop function
+#define SETSTOPMODE         0xD0
+#define SETACCEL            0x90 // Acceleration 
+#define SETDECEL            0x91 // Deacceleration
+#define SETPROFILEMODE      0xA0
+#define GETVERSION          0x8F
+#define SETPHASECOUNTS      0x75
+#define SETACTUALPOS        0x4D // Odometry
 
 #define MOTOR_0             ((unsigned char)0x00)
 #define MOTOR_1             ((unsigned char)0x01)
@@ -47,10 +61,27 @@
 #define DEFAULT_PERCENT_TORQUE  75
 
 
+typedef enum {
+  TrapezoidalProfile = 0,
+  VelocityContouringProfile,
+  SCurveProfile,
+} ProfileMode_t;
+
+// Different stop modes the driver can enter into
+typedef enum {
+  NoStopMode = 0,
+  AbruptStopMode,
+  SmoothStopMode
+} StopMode;
+
 class wbr914_minimal{
 
 
     private:
+    // Comm info for connection to M3 controller
+    struct termios     _old_tio;
+    bool               _tioChanged;
+    bool               _fd_blocking;
     // Send commands
     int  sendCmd0( unsigned char address, unsigned char c,int ret_num, unsigned char * ret );
     int  sendCmd16( unsigned char address, unsigned char c,int16_t arg, int ret_num, unsigned char * ret );
@@ -64,17 +95,32 @@ class wbr914_minimal{
 
 
     public:
-    int _fd;
-    const char* _serial_port;
 
+
+    wbr914_minimal();
+    virtual ~wbr914_minimal();
     bool open_serial(const char* _serial_port);
 
     // Robot commands
+    int MainSetup(); // Initiate robot driver comm and set needed variables
+    void MainQuit(); // Quit the program safly by stopping motors and robot comm
+    int  InitRobot(); 
     void init_robot();
+    void Stop(int StopMode= FULL_STOP);
     bool EnableMotors( bool enable );
     void UpdateM3();
-    void SetVelocity( float mpsL, float mpsR );
     const char* GetPMDErrorString( int rc );
+
+    void SetVelocity( float mpsL, float mpsR );
+
+    void SetContourMode( ProfileMode_t prof );
+    void SetMicrosteps();
+    void SetAccelerationProfile();
+    void SetActualPositionInTicks( int32_t left, int32_t right ); // Odometry
+    int ResetRawPositions();  // Reset Odometry
+    
+    int _fd;
+    const char* _serial_port;
 
     // Format casting functions
     int16_t BytesToInt16(unsigned char *ptr);
@@ -83,9 +129,19 @@ class wbr914_minimal{
     int32_t MPS2Vel( float mps );
     float Vel2MPS( int32_t vel );
 
+
+    // Odometry stuff
+    int32_t last_lpos;
+    int32_t last_rpos;
+    double  _x;
+    double  _y;
+    double  _yaw;
+
     // State of robot
+    bool    _stopped;
     double  _velocityK;
     int     _usCycleTime;
     bool    _motorsEnabled;
     int     _percentTorque;
+    int     _debug;
 };
