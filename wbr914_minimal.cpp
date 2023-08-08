@@ -1,8 +1,172 @@
 #include "wbr914_minimal.h"
 
 
+wbr914_minimal::wbr914_minimal()
+  : _tioChanged( false ),
+    _stopped( true ), _motorsEnabled( false )
+{
+
+  _fd = -1;
+
+    // Decide torque precentage
+   _percentTorque = DEFAULT_PERCENT_TORQUE;
+   // Constrain torque (power to motor phases) between 0 and 100.
+   // Smaller numbers mean less torque, but less power used and less
+   // heat generated. Not much use reducing the torque setting below
+   // 20%.
+   if ( _percentTorque > 100 )
+   {
+     _percentTorque = 100;
+   }
+   else if ( _percentTorque < 20 )
+   {
+     _percentTorque = 20;
+   }
+
+
+
+}
+
+int wbr914_minimal::MainSetup()
+{
+  struct termios term;
+  int flags;
+  //int ltics,rtics,lvel,rvel;
+
+  if(open_serial(NULL) == 0){
+    printf("open_serial() failed: %s\n", strerror(errno));
+  }
+  // Save the serial port attributes to be reseted when program terminates
+  if(tcgetattr(this->_fd, &term) < 0 )
+  {
+    printf("tcgetattr() failed: %s\n", strerror(errno));
+    close(this->_fd);
+    this->_fd = -1;
+    return(-1);
+  }
+
+  tcgetattr( this->_fd, &_old_tio);
+
+  cfmakeraw( &term );
+  cfsetispeed( &term, B38400 ); // Set communication speed(baud)
+  cfsetospeed( &term, B38400 );
+
+  // 2 stop bits
+  term.c_cflag |= CSTOPB | CLOCAL | CREAD;
+  term.c_iflag |= IGNPAR;
+
+  // Set timeout to .1 sec
+  term.c_cc[ VTIME ] = 1;
+  term.c_cc[ VMIN ]  = 0;
+
+  if(tcsetattr(this->_fd, TCSADRAIN, &term) < 0 )
+  {
+    printf("tcsetattr() failed: %s\n", strerror(errno));
+    close(this->_fd);
+    this->_fd = -1;
+    return(-1);
+  }
+
+  _tioChanged = true;
+
+  {
+    struct serial_struct serial_info;
+
+    // get serial information using ioctl function
+
+    if ( ioctl( _fd, TIOCGSERIAL, &serial_info ) < 0)
+    {
+      // get the serial info
+      perror("config_serial_port: ioctl TIOCGSERIAL");
+      return(-1);
+    }
+
+    // Custom baud rate of 416666 baud, the max the
+    // motor controller will handle.
+    // round off to get the closest divisor.
+    serial_info.flags = ASYNC_SPD_CUST | ASYNC_LOW_LATENCY;
+    serial_info.custom_divisor = (int)((float)24000000.0/(float)_BAUD + 0.5);
+    if ( _debug ){
+      printf( "Custom divisor = %d\n", serial_info.custom_divisor );
+    }
+    if ( ioctl( _fd, TIOCSSERIAL, &serial_info ) < 0)
+    {
+      perror("config_serial_port: ioctl TIOCSSERIAL");
+      return(-1);
+    }
+  }
+
+  _fd_blocking = false;
+
+  if ( _debug )
+    printf( "InitRobot\n" );
+  fflush(stdout);
+  if(InitRobot() < 0)
+  {
+    printf("failed to initialize robot\n");
+    close(this->_fd);
+    this->_fd = -1;
+    return(-1);
+  }
+
+  /* ok, we got data, so now set NONBLOCK, and continue */
+  if((flags = fcntl(this->_fd, F_GETFL)) < 0)
+  {
+    printf("fcntl() failed: %s\n", strerror(errno));
+    close(this->_fd);
+    this->_fd = -1;
+    return(-1);
+  }
+
+  if(fcntl(this->_fd, F_SETFL, flags ^ O_NONBLOCK) < 0)
+  {
+    printf("fcntl() failed: %s\n", strerror(errno));
+    close(this->_fd);
+    this->_fd = -1;
+    return(-1);
+  }
+  _fd_blocking = true;
+
+  _usCycleTime = 154;
+  // Get cycle time
+  unsigned char ret[4];
+  if( sendCmd0( LEFT_MOTOR, GETSAMPLETIME, 4,ret ) < 0)
+  {
+    printf("failed to get cycle time\n");
+    return -1;
+  }
+  _usCycleTime = BytesToInt16( &(ret[2]) );
+
+  _velocityK = (GEAR_RATIO * MOTOR_TICKS_PER_REV * _usCycleTime * 65536)/(WHEEL_CIRC * 1000000);
+
+  SetMicrosteps();
+
+  // PWM sign magnitude mode
+  if ( (sendCmd16( LEFT_MOTOR, SETOUTPUTMODE, 1, 2, ret ) < 0 ) ||
+       (sendCmd16( RIGHT_MOTOR, SETOUTPUTMODE, 1, 2, ret ) < 0 ))
+  {
+    printf( "Error setting sign-magnitude mode\n" );
+  }
+
+  /*  This might be a good time to reset the odometry values */
+  if ( _debug )
+    printf( "ResetRawPositions\n" );
+  fflush( stdout );
+  ResetRawPositions();
+
+  if ( _debug )
+    printf( "SetAccelerationProfile\n" );
+  SetAccelerationProfile();
+  UpdateM3();
+
+  return(0);
+}
+
 void wbr914_minimal::init_robot(){
 
+    struct termios term;
+    int flags;
+    
     // Open the serial port of the robot
     if(!this->open_serial(NULL)){
         printf("open() failed: %s\n", strerror(errno));
@@ -75,6 +239,7 @@ bool wbr914_minimal::open_serial(const char* _serial_port){
     // open it.  non-blocking at first, in case there's no robot
     if((this->_fd = open(_serial_port, O_RDWR | O_NOCTTY, S_IRUSR | S_IWUSR )) < 0 )
     {
+      printf("open() failed: %s\n", strerror(errno));
       return false;
     }
     return true;
@@ -437,3 +602,233 @@ int16_t wbr914_minimal::BytesToInt16(unsigned char *ptr)
 
   return data;
 }
+
+wbr914_minimal::~wbr914_minimal()
+{
+  if ( _tioChanged )
+    tcsetattr( this->_fd, TCSADRAIN, &_old_tio);
+  MainQuit();
+
+}
+
+void wbr914_minimal::Stop( int StopMode ) {
+
+  unsigned char ret[8];
+
+  if ( _debug )
+    printf( "Stop\n" );
+
+  /* Start with motor 0*/
+  _stopped = true;
+
+  if( StopMode == FULL_STOP )
+  {
+    if (sendCmd16( LEFT_MOTOR, RESETEVENTSTATUS, 0x0000, 2, ret )<0 )
+    {
+      printf( "Error resetting event status\n" );
+    }
+    if ( sendCmd16( LEFT_MOTOR, SETSTOPMODE, AbruptStopMode, 2, ret )<0 )
+    {
+      printf( "Error setting stop mode\n" );
+    }
+    if ( sendCmd32( LEFT_MOTOR, SETVEL, 0, 2, ret )<0)
+    {
+      printf( "Error resetting motor velocity\n" );
+    }
+    if ( sendCmd32( LEFT_MOTOR, SETACCEL, 0, 2, ret )<0 )
+    {
+      printf( "Error resetting acceleration\n" );
+    }
+    if ( sendCmd32( LEFT_MOTOR, SETDECEL, 0, 2, ret )<0 )
+    {
+      printf( "Error resetting deceleration\n" );
+    }
+
+
+    if ( sendCmd16( RIGHT_MOTOR, RESETEVENTSTATUS, 0x0000, 2, ret )<0 )
+    {
+      printf( "Error resetting event status\n" );
+    }
+    if ( sendCmd16( RIGHT_MOTOR, SETSTOPMODE, AbruptStopMode, 2, ret )<0 )
+    {
+      printf( "Error setting stop mode\n" );
+    }
+    if ( sendCmd32( RIGHT_MOTOR, SETVEL, 0, 2, ret )<0 )
+    {
+      printf( "Error resetting motor velocity\n" );
+    }
+    if ( sendCmd32( RIGHT_MOTOR, SETACCEL, 0, 2, ret )<0 )
+    {
+      printf( "Error resetting acceleration\n" );
+    }
+    if ( sendCmd32( RIGHT_MOTOR, SETDECEL, 0, 2, ret )<0 )
+    {
+      printf( "Error resetting deceleration\n" );
+    }
+
+    SetContourMode( VelocityContouringProfile );
+
+    EnableMotors( false );
+    UpdateM3();
+
+    if ((sendCmd0( LEFT_MOTOR, RESET, 2, ret )<0)||
+	(sendCmd0( RIGHT_MOTOR, RESET, 2, ret )<0))
+    {
+      printf( "Error resetting motor\n" );
+    }
+
+  }
+  else
+  {
+    if ( sendCmd16( LEFT_MOTOR, RESETEVENTSTATUS, 0x0700, 2, ret )<0 )
+    {
+      printf( "Error resetting event status\n" );
+    }
+    if ( sendCmd32( LEFT_MOTOR, SETVEL, 0, 2, ret )<0 )
+    {
+      printf( "Error resetting motor velocity\n" );
+    }
+
+    if ( sendCmd16( RIGHT_MOTOR, RESETEVENTSTATUS, 0x0700, 2, ret )<0 )
+    {
+      printf( "Error resetting event status\n" );
+    }
+    if ( sendCmd32( RIGHT_MOTOR, SETVEL, 0, 2, ret )<0)
+    {
+      printf( "Error resetting motor velocity\n" );
+    }
+
+    UpdateM3();
+
+    if ((sendCmd0( LEFT_MOTOR, RESET, 2, ret )<0)||
+	(sendCmd0( RIGHT_MOTOR, RESET, 2, ret )<0))
+    {
+      printf( "Error resetting motor\n" );
+    }
+  }
+}
+
+int wbr914_minimal::InitRobot()
+{
+
+  // initialize the robot
+  unsigned char buf[6];
+  usleep( DELAY_US);
+
+  if ( (sendCmd0( LEFT_MOTOR, RESET, 2, buf )<0 ) ||
+       (sendCmd0( RIGHT_MOTOR, RESET, 2, buf )<0 ))
+  {
+    printf( "Error Resetting motors\n" );
+  }
+
+  if ( _debug )
+    printf( "GetVersion\n" );
+  if( (sendCmd0( LEFT_MOTOR, GETVERSION, 6, buf ) < 0)||
+      (sendCmd0( RIGHT_MOTOR, GETVERSION, 6, buf )<0 ))
+  {
+    printf("Cannot get version\n");
+    return -1;
+  }
+
+  _stopped = true;
+  return(0);
+}
+
+void wbr914_minimal::SetMicrosteps()
+{
+  uint8_t ret[2];
+
+  if ( (sendCmd16( LEFT_MOTOR, SETPHASECOUNTS, (short)MOTOR_TICKS_PER_STEP*4, 2, ret)<0)||
+       (sendCmd16( RIGHT_MOTOR, SETPHASECOUNTS, (short)MOTOR_TICKS_PER_STEP*4, 2, ret)<0))
+  {
+    printf( "Error setting phase counts\n" );
+  }
+}
+
+void wbr914_minimal::SetActualPositionInTicks( int32_t left, int32_t right )
+{
+  uint8_t ret[6];
+  if ( (sendCmd32( LEFT_MOTOR, SETACTUALPOS, -left, 2, ret )<0)||
+       (sendCmd32( RIGHT_MOTOR, SETACTUALPOS, right, 2, ret )<0))
+  {
+    printf( "Error in SetActualPositionInTicks\n" );
+  }
+}
+
+int wbr914_minimal::ResetRawPositions()
+{
+  if ( _debug )
+    printf("Reset Odometry\n");
+  int Values[2];
+  Values[0] = 0;
+  Values[1] = 0;
+
+  if ( _debug )
+    printf( "SetActualPositionInTicks\n" );
+  SetActualPositionInTicks( 0, 0 );
+  UpdateM3();
+
+  last_lpos = 0;
+  last_rpos = 0;
+  /*
+  player_position2d_data_t data;
+  memset(&data,0,sizeof(player_position2d_data_t));
+  Publish( position_id, PLAYER_MSGTYPE_DATA, PLAYER_POSITION2D_DATA_STATE, &data, sizeof(data),NULL);
+  */
+  _x   = 0;
+  _y   = 0;
+  _yaw = 0;
+  return 0;
+}
+
+// How fast or slow De/Acceleration should be
+void wbr914_minimal::SetAccelerationProfile()
+{
+  uint8_t ret[2];
+  //  int32_t accel = (int32_t)MOTOR_TICKS_PER_STEP*2;
+
+  // Decelerate faster than accelerating.
+  if ( (sendCmd32( LEFT_MOTOR,  SETACCEL, ACCELERATION_DEFAULT, 2, ret )<0)||
+       (sendCmd32( RIGHT_MOTOR, SETACCEL, ACCELERATION_DEFAULT, 2, ret )<0))
+  {
+    printf( "Error setting Accelleration profile\n" );
+  }
+  if ((sendCmd32( LEFT_MOTOR,  SETDECEL, DECELERATION_DEFAULT, 2, ret )<0)||
+      (sendCmd32( RIGHT_MOTOR, SETDECEL, DECELERATION_DEFAULT, 2, ret )<0))
+  {
+    printf( "Error setting Decelleration profile\n" );
+  }
+  SetContourMode( TrapezoidalProfile );
+}
+
+void wbr914_minimal::SetContourMode( ProfileMode_t prof )
+{
+  uint8_t ret[2];
+
+  if ( (sendCmd16( LEFT_MOTOR, SETPROFILEMODE, prof, 2, ret)<0)||
+       (sendCmd16( RIGHT_MOTOR, SETPROFILEMODE, prof, 2, ret)<0))
+  {
+    printf( "Error setting profile mode\n" );
+  }
+}
+
+
+
+void wbr914_minimal::MainQuit()
+{
+  if( this->_fd == -1 )
+    return;
+
+  // Stop the robot
+  Stop();
+
+  EnableMotors( false );
+
+  // Close the connection to the M3
+  int fd = _fd;
+  this->_fd = -1;
+  close( fd );
+
+  puts( "914 has been shut down" );
+}
+
