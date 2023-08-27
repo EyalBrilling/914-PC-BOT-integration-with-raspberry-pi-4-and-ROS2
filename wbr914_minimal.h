@@ -112,7 +112,8 @@ class wbr914_minimal{
     const char* GetPMDErrorString( int rc );
 
     void SetVelocity( float mpsL, float mpsR );
-
+    void SetVelocityInTicks( int32_t left, int32_t right );
+    
     void SetContourMode( ProfileMode_t prof );
     void SetMicrosteps();
     void SetAccelerationProfile();
