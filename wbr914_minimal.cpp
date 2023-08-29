@@ -309,6 +309,16 @@ void wbr914_minimal::SetVelocity( float mpsL, float mpsR )
   }
 }
 
+void wbr914_minimal::SetVelocityInTicks( int32_t left, int32_t right )
+{
+  uint8_t ret[2];
+  if ( (sendCmd32( LEFT_MOTOR,  SETVEL, -left, 2, ret )<0)||
+       (sendCmd32( RIGHT_MOTOR, SETVEL, right, 2, ret )<0))
+  {
+    printf( "Error setting velocity in ticks\n" );
+  }
+}
+
 
 
 int32_t wbr914_minimal::MPS2Vel( float mps )
