@@ -1,4 +1,5 @@
 #include "wbr914_minimal.h"
+
 int main(){
     wbr914_minimal wbr914;
 
@@ -11,7 +12,10 @@ int main(){
     }
     //wbr914.SetVelocity(10,10);
     wbr914.SetContourMode( VelocityContouringProfile );
-    wbr914.SetVelocityInTicks(10,10);
+    for(int i=0;i<=1000;i++){
+    wbr914.SetVelocityInTicks(30000,30000);
+    wbr914.UpdateM3();
+    }
     sleep(1);
     wbr914.SetVelocity(0,0);
     wbr914.MainQuit();
