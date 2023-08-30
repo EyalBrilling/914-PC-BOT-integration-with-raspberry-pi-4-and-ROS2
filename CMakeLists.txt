@@ -5,11 +5,17 @@ project(MyProject)
 # Set the C++ standard
 set(CMAKE_CXX_STANDARD 11)
 
+# Global include directories needed by all/most CMakeLists
+include_directories(wbr914_base_driver)
+
 # Add the executable target
-add_executable(test_minimal wbr_main_try.cpp wbr914_minimal.cpp wbr914_minimal.h)
+add_executable(test_minimal wbr_main_try.cpp wbr914_base_driver/wbr914_minimal.cpp wbr914_base_driver/wbr914_minimal.h)
 
 # Enable debugging symbols
 target_compile_options(test_minimal PRIVATE -g)
+
+
+
 
 # Link the necessary libraries (if needed)
 # target_link_libraries(MyExecutable PRIVATE some_library_name)
@@ -19,5 +25,4 @@ target_compile_options(test_minimal PRIVATE -g)
 
 # If you want to generate Makefiles for release (e.g., in Linux):
 # cmake -DCMAKE_BUILD_TYPE=Release .
-
 
