@@ -5,16 +5,14 @@
 
 #### User added section
 
-# build files
-/build/
-
 # build files from colcon build
 src/install
 src/log
+src/build
 
 # ROS Tutorials
-/ros_tutorials/
-/cpp_pubsub/
+src/ros_tutorials
+src/cpp_pubsub
 
 ####
 
