@@ -11,12 +11,17 @@ using std::placeholders::_1;
 class CmdVelListener : public rclcpp::Node{
 public:
   CmdVelListener() : Node("vel_listener_node"){
-    // Open connection with wbr914 usb and enable motors
-    wbr914.MainSetup();
+    // Open connection with wbr914 usb,ready all needed settings and enable motors
+    int mainSetupFlag = wbr914.MainSetup();
+    if(mainSetupFlag==0){
+      printf("wbr914 MainSetup succeed\n");
+    }
     wbr914.UpdateM3();
-    wbr914.EnableMotors(true);  
+    bool enableMotorsFlag = wbr914.EnableMotors(true);
+    if(enableMotorsFlag==true){
+      printf("enableMotors is true\n");
+    }
     wbr914.UpdateM3();
-
     // Create the subscriber to a 'velocity' topic.
     // Using placeholder _1 for keeping the option of using a ptr to Twist.
     sub = this->create_subscription<geometry_msgs::msg::Twist>(

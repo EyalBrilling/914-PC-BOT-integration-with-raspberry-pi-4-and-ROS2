@@ -9,7 +9,10 @@ void CmdVelListener::velocity_callback(const geometry_msgs::msg::Twist& msg){
     }
 }
 
-int main(){
-
+int main(int argc, char * argv[]){
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<CmdVelListener>());
+  rclcpp::shutdown();
+  return 0;
   
 }
