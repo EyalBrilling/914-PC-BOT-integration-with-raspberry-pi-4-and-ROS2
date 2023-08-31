@@ -1,28 +1,7 @@
 #include "velocity_ros_wrapper.h"
 
 
-CmdVelListener::CmdVelListener() {
-  // Initialize ROS.
-  ros::init(argc, argv, "cmd_vel_listener");
-
-  wbr914.MainSetup();
-  wbr914.UpdateM3();
-  bool test = wbr914.EnableMotors(true);  
-  wbr914.UpdateM3();
-  
-  // Create a node.
-  ros::NodeHandle nh;
-
-  // Create a subscriber.
-  sub = nh.subscribe("/cmd_vel", 1, &CmdVelListener::OnTwist, this);
-}
-
-
-CmdVelListener::~CmdVelListener(){
-  wbr914.MainQuit();
-}
-
-void CmdVelListener::OnCmd(const geometry_msgs::Twist& twist){
+void CmdVelListener::velocity_callback(const geometry_msgs::msg::Twist& msg){
   wbr914.SetContourMode( VelocityContouringProfile );
   for(int i=0;i<=1000;i++){
   wbr914.SetVelocityInTicks(40000,40000);
@@ -30,7 +9,10 @@ void CmdVelListener::OnCmd(const geometry_msgs::Twist& twist){
     }
 }
 
-int main(){
-
+int main(int argc, char * argv[]){
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<CmdVelListener>());
+  rclcpp::shutdown();
+  return 0;
   
 }

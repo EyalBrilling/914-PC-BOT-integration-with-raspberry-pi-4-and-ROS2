@@ -6,13 +6,32 @@ https://docs.ros.org/en/iron/Installation/Ubuntu-Install-Debians.html
 
 https://docs.ros.org/en/iron/Tutorials/Beginner-Client-Libraries/Colcon-Tutorial.html
 
-## Build ROS packages
+## Build wbr914 ROS packages
 
-**To build the ROS packages run the folloing command from the src folder**
+wbr914 ROS packages are under src.
+
+**To build the ROS packages run the following command from the src folder**
 
 ```
 colcon build
 ```
+
+## Run a package executable
+
+After building packages,Running ROS executables is done by running the command:
+
+```shell
+ros2 run <package_name> <executable_name>
+```
+
+For example,to run wbr914 listener in the `wbr914_velocity_package` package run:
+
+```shell
+ros2 run wbr914_velocity_package wbr914_velocity_listener 
+```
+
+This command wil run the listener that waits for velocity commands from publishers.
+
 
 ## Compile ROS from Visual studio code
 
