@@ -21,14 +21,14 @@ ${WBR914_PROJECT_PATH}/wbr914_base_driver
 )
 
 
-add_executable(listener0 src/velocity_ros_wrapper.cpp include/wbr914_velocity_package/velocity_ros_wrapper.h ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.h ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.cpp)
+add_executable(wbr914_velocity_listener src/velocity_ros_wrapper.cpp include/wbr914_velocity_package/velocity_ros_wrapper.h ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.h ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.cpp)
 
 # Add needed ROS packages to the executable
-ament_target_dependencies(listener0 rclcpp geometry_msgs)
+ament_target_dependencies(wbr914_velocity_listener rclcpp geometry_msgs)
 
 
 
-install(TARGETS listener0
+install(TARGETS wbr914_velocity_listener
   DESTINATION lib/${PROJECT_NAME})
 
 
