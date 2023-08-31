@@ -25,7 +25,6 @@ Can also open vsc command pallete(ctrl+shift+p) and search  "Tasks: Configure De
 
 ```
 {
-{
 	"version": "2.0.0",
 	"tasks": [
 		{
