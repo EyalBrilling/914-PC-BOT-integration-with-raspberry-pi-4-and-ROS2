@@ -10,6 +10,9 @@ src/install
 src/log
 src/build
 
+# build files from top CMakeLists
+build/
+
 # ROS Tutorials
 src/ros_tutorials
 src/cpp_pubsub
