@@ -25,6 +25,7 @@ Can also open vsc command pallete(ctrl+shift+p) and search  "Tasks: Configure De
 
 ```
 {
+{
 	"version": "2.0.0",
 	"tasks": [
 		{
@@ -39,6 +40,10 @@ Can also open vsc command pallete(ctrl+shift+p) and search  "Tasks: Configure De
 				"--cmake-args",
 				"-DCMAKE_BUILD_TYPE=debug"
 			],
+			// Run the command from the src folder
+			"options": {
+				"cwd": "${workspaceFolder}/src"
+			},
 			"problemMatcher": [
 				"$catkin-gcc"
 			],
