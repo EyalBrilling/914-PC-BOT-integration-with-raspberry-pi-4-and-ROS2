@@ -9,15 +9,22 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 # Set the project path from the enviorment variable
 set(WBR914_PROJECT_PATH $ENV{WBR914_PROJECT_PATH})
+message(STATUS "WBR914_PROJECT_PATH: ${WBR914_PROJECT_PATH}")
 
-include_directories(include/wbr914_velocity_package)
-include_directories(${WBR914_PROJECT_PATH}/wbr914_base_driver)
+include_directories(
+include/wbr914_velocity_package
+${WBR914_PROJECT_PATH}/wbr914_base_driver
+)
+
 
 add_executable(listener0 src/velocity_ros_wrapper.cpp include/wbr914_velocity_package/velocity_ros_wrapper.h ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.h ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.cpp)
-ament_target_dependencies(listener0 rclcpp std_msgs)
+
+# Add needed ROS packages to the executable
+ament_target_dependencies(listener0 rclcpp geometry_msgs)
 
 
 
