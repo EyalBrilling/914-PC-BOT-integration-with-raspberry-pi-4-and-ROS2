@@ -3,6 +3,19 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+#### User added section
+
+# build files from colcon build
+src/install
+src/log
+src/build
+
+# ROS Tutorials
+src/ros_tutorials
+src/cpp_pubsub
+
+####
+
 # User-specific files
 *.rsuser
 *.suo
