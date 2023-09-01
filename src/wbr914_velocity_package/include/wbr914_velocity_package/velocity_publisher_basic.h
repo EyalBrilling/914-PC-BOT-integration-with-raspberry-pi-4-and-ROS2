@@ -2,6 +2,7 @@
 #include "geometry_msgs/msg/twist.hpp"
 
 const std::string velocity_topic_name = "velocity";
+const int velocity_command_secs = 10;
 
 class CmdVelPublisher_basic: public rclcpp::Node {
 public:
@@ -34,13 +35,22 @@ public:
         printf("input error. 2 values are expected.\n");
         continue;
       }
-
+        // Construct message
         geometry_msgs::msg::Twist msg;
         msg.linear.x = std::stod(tokens[0]);
         msg.angular.x = std::stod(tokens[1]);
-        publisher->publish(msg);
-        printf(" Published to topic %s Linear x: %f, Angular x: %f \n", velocity_topic_name.c_str(), msg.linear.x, msg.angular.x);
-    }
+
+        // Run the command for some seconds. Robot expects contiunally command
+        auto startTime = std::chrono::steady_clock::now();
+        auto endTime = startTime + std::chrono::seconds(velocity_command_secs);
+
+        printf("Publishing for %i secs to topic %s Linear x: %f, Angular x: %f \n", velocity_command_secs, velocity_topic_name.c_str(), msg.linear.x, msg.angular.x);
+
+        while (std::chrono::steady_clock::now() < endTime) {
+            publisher->publish(msg);
+        }
+            printf("Ended publishing command\n");
+        }
   }
 
 private:

@@ -12,6 +12,7 @@
 // Default max speeds
 #define ACCELERATION_DEFAULT 100
 #define DECELERATION_DEFAULT 250
+#define MOTOR_DEF_MAX_SPEED 0.3
 
 /* Conenction */
 #define DEFAULT_WBR914_PORT "/dev/ttyUSB0" // Default robot port via USB
@@ -50,6 +51,7 @@
 #define MOTOR_TICKS_PER_REV     (200.0*MOTOR_TICKS_PER_STEP)
 #define WHEEL_DIAMETER          (0.125)
 #define WHEEL_CIRC              (M_PI*WHEEL_DIAMETER)
+#define DEFAULT_AXLE_LENGTH     (0.301)
 
 #define _BAUD                   416666 // Baud rate
 /* For safety */
