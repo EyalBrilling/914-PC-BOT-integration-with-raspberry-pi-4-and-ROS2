@@ -4,10 +4,10 @@
 int main(int argc, char** argv) {
   rclcpp::init(argc, argv);
 
-  MyPublisherNode my_publisher_node;
+  CmdVelPublisher_basic my_publisher_node;
 
   // Spin until ROS is shutdown
-  rclcpp::spin();
+  rclcpp::spin(std::make_shared<CmdVelPublisher_basic>());
 
   rclcpp::shutdown();
 
