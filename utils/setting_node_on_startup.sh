@@ -1,7 +1,7 @@
 #!/bin/bash
 
 WBR914_PROJECT_PATH="/home/pi/WhiteBox-PC-BOT-rpi4"
-echo "Notice! WBR914_PROJECT_PATH const inside 'setting_node_on_startup,sh' is $variable_name. Change it inside file if needed"
+echo "Notice! WBR914_PROJECT_PATH const inside 'setting_node_on_startup,sh' is $WBR914_PROJECT_PATH. Change it inside file if needed"
 
 
 ##########################################################
@@ -48,7 +48,6 @@ sudo touch "$service_file"
 
 
 service_content="[Unit]
-Requires=roscore.service
 After=network-online.target
 
 [Service]
