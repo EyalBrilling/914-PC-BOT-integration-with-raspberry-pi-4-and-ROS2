@@ -97,11 +97,20 @@ ros2 run wbr914_velocity_package wbr914_velocity_listener
 
 As the pi4 `ill be put on the robot,`e `ant it to run the node and listen for commands on turning on. 
 
-~e `ill use the steps in the follo`ing guide:
+You have a shell file under 'utils' to run the commands. The shell script assumes linux user name 'pi' is used.
+
+The shell file is based on the follo`ing guide:
 
 https://mshields.name/blog/2022-03-16-running-ros-nodes-on-boot/
 
+**Notice changes from guide:**
 
+- This is a ros1 guide. ROS2 doesnt use roscore as there is not master node in it anymore. So the roscore.service isn't needed.
+
+Test `ith:
+
+sudo systemctl start roscore.service
+sudo systemctl status roscore.service
 
 ## Note on safety
 
