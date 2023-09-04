@@ -27,6 +27,9 @@ sudo apt install ros-iron-ros-base
 # Setup enviorment.
 source /opt/ros/iron/setup.bash
 
+# Add user to dialout group
+sudo usermod -aG dialout pi
+
 # Build node packages
 cd ${WBR914_PROJECT_PATH}/src
 echo "Entered ${WBR914_PROJECT_PATH}/src to build listener package"
