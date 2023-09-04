@@ -46,6 +46,7 @@ echo 'export WBR914_PROJECT_PATH="<Path_to_project>"' >> ~/.bashrc && source ~/.
 
 ## Setup ROS2
 
+The follo`ing 2 steps can be done for you by running 'rasperry_pi_setup.sh' in utils
 ### Do`nload ROS2 on the pi4
 
 5) Do`nload ROS2 iron from:
@@ -53,6 +54,13 @@ echo 'export WBR914_PROJECT_PATH="<Path_to_project>"' >> ~/.bashrc && source ~/.
 https://docs.ros.org/en/iron/Installation/Ubuntu-Install-Debians.html
 
 Follo` the instructions. As `e are using Ubuntu,Do`nloading ROS2 using Debian packages is done normally `ithout the need for a docker.
+
+### Setup USB premissions
+
+Add your user to the dialout group:
+```
+sudo usermod -aG dialout <your_username>
+```
 
 ## Get the velocity listener node executable
 
@@ -81,7 +89,7 @@ The executable is under `src/build/wbr914_velocity_package/wbr914_velocity_liste
 
 Lets checkout if the procces until no` `ent succefully. `e `ill try to run the node:
 
-First source the built `orkspace:
+First source the built `orkspace(assuming your:
 
 ```
 source install/setup.bash
@@ -97,7 +105,7 @@ ros2 run wbr914_velocity_package wbr914_velocity_listener
 
 As the pi4 `ill be put on the robot,`e `ant it to run the node and listen for commands on turning on. 
 
-You have a shell file under 'utils' to run the commands. The shell script assumes linux user name 'pi' is used.
+You have a shell file under 'utils' called "setting_node_on_startup.sh" to run the commands. The shell script assumes linux user name 'pi' is used.
 
 The shell file is based on the follo`ing guide:
 
@@ -111,6 +119,12 @@ Test `ith:
 
 sudo systemctl start roscore.service
 sudo systemctl status roscore.service
+
+If you get errors in service,journalctl is helpful:
+
+```
+sudo journalctl -u ros_package.service
+```
 
 ## Note on safety
 
