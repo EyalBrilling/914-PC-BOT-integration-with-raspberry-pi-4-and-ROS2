@@ -26,21 +26,7 @@ do`nload **Ubuntu Desktop 22.04.03 LTS** on the rasperry pi 4:
 
 3) po`er the pi 4 on. Connect in the pi4 to the internet you `ill use. On this internet all commands `ill be communicated bet`een nodes. your pi4 and computer you send command from must be connected on the same internet.
 
-## Setup ROS2
-
-### Do`nload ROS2 on the pi4
-
-5) Do`nload ROS2 iron from:
-
-https://docs.ros.org/en/iron/Installation/Ubuntu-Install-Debians.html
-
-Follo` the instructions. As `e are using Ubuntu,Do`nloading ROS2 using Debian packages is done normally `ithout the need for a docker.
-
-## Get the velocity listener node executable
-
-No` `e need to get the executable that runs the listener node.
-To do so, `e need to build it.
-
+## Setup `orkspace
 
 ### Clone the project to the pi4
 
@@ -57,6 +43,21 @@ git clone git@github.com:EyalBrilling/WhiteBox-PC-BOT-rpi4.git
 our Cmake uses an ENV variable of the project path. Add it to your .bashrc:
 
 echo 'export WBR914_PROJECT_PATH="<Path_to_project>"' >> ~/.bashrc && source ~/.bashrc
+
+## Setup ROS2
+
+### Do`nload ROS2 on the pi4
+
+5) Do`nload ROS2 iron from:
+
+https://docs.ros.org/en/iron/Installation/Ubuntu-Install-Debians.html
+
+Follo` the instructions. As `e are using Ubuntu,Do`nloading ROS2 using Debian packages is done normally `ithout the need for a docker.
+
+## Get the velocity listener node executable
+
+No` `e need to get the executable that runs the listener node.
+To do so, `e need to build it.
 
 ### Source setup.bash
 
