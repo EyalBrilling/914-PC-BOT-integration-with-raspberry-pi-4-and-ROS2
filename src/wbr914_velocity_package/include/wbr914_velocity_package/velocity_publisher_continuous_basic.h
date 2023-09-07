@@ -11,7 +11,7 @@ const int velocity_command_secs = 10;
 */
 class CmdVelPublisher_continuous_basic: public rclcpp::Node {
 public:
-  CmdVelPublisher_basic() : Node("CmdVelPublisher_continuous_basic") {
+  CmdVelPublisher_continuous_basic() : Node("CmdVelPublisher_continuous_basic") {
     // Create a publisher to the 'velocity' topic
     publisher = this->create_publisher<geometry_msgs::msg::Twist>(velocity_topic_name, 10);
 
@@ -19,13 +19,14 @@ public:
     msg.linear.x = 0;
     msg.angular.x = 0;
 
-    while (rclcpp::ok()) {
-      // Open new thread to continually publish Twist msg.
-      std::thread([](){
+    // Open new thread to continually publish Twist msg.
+    std::thread thread([this,&msg](){
         while(rclcpp::ok()){
           publisher->publish(msg);
         }
       });
+    while (rclcpp::ok()) {
+
       // Read input from the user
       std::string input;
       std::vector< std::string > tokens;
@@ -58,8 +59,10 @@ public:
         msg.angular.x = std::stod(tokens[1]);
 
 
-        printf("Publishing to topic %s Linear x: %f, Angular x: %f \n", velocity_command_secs, velocity_topic_name.c_str(), msg.linear.x, msg.angular.x);
+        printf("Publishing to topic %s Linear x: %f, Angular x: %f \n", velocity_topic_name.c_str(), msg.linear.x, msg.angular.x);
         }
+
+        thread.join();
   }
 
 private:
