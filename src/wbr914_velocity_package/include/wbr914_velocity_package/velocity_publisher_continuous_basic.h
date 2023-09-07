@@ -4,19 +4,27 @@
 const std::string velocity_topic_name = "velocity";
 const int velocity_command_secs = 10;
 
+/*
+  Publishing Twist message indifindlly while getting user input to change velocity to be sent.
+  New thread is in charge of sending message - only reading from msg.
+  main thread is in charge of getting input from user. writing to msg.
+*/
 class CmdVelPublisher_continuous_basic: public rclcpp::Node {
 public:
   CmdVelPublisher_basic() : Node("CmdVelPublisher_continuous_basic") {
     // Create a publisher to the 'velocity' topic
     publisher = this->create_publisher<geometry_msgs::msg::Twist>(velocity_topic_name, 10);
-    // Create a 'while' loop that will keep running until the user enters 'exit'
 
     geometry_msgs::msg::Twist msg;
+    msg.linear.x = 0;
+    msg.angular.x = 0;
 
     while (rclcpp::ok()) {
-      // Open new thread for getting input
+      // Open new thread to continually publish Twist msg.
       std::thread([](){
-        
+        while(rclcpp::ok()){
+          publisher->publish(msg);
+        }
       });
       // Read input from the user
       std::string input;
@@ -39,24 +47,18 @@ public:
 
       // Expecting only x of linear and angular velocities
       if(tokens.size() != 2){
-        printf("input error. 2 values are expected.\n");
-        continue;
+          printf("input error. 2 values are expected.\n");
+          // For safety,in case of input error reset movement
+          msg.linear.x = 0;
+          msg.angular.x = 0;
+          continue;
       }
-        // Construct message
-        
+        // Construct message.
         msg.linear.x = std::stod(tokens[0]);
         msg.angular.x = std::stod(tokens[1]);
 
-        // Run the command for some seconds. Robot expects contiunally command
-        auto startTime = std::chrono::steady_clock::now();
-        auto endTime = startTime + std::chrono::seconds(velocity_command_secs);
 
-        printf("Publishing for %i secs to topic %s Linear x: %f, Angular x: %f \n", velocity_command_secs, velocity_topic_name.c_str(), msg.linear.x, msg.angular.x);
-
-        while (std::chrono::steady_clock::now() < endTime) {
-            publisher->publish(msg);
-        }
-            printf("Ended publishing command\n");
+        printf("Publishing to topic %s Linear x: %f, Angular x: %f \n", velocity_command_secs, velocity_topic_name.c_str(), msg.linear.x, msg.angular.x);
         }
   }
 
