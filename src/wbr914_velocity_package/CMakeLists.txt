@@ -20,10 +20,20 @@ include/wbr914_velocity_package
 ${WBR914_PROJECT_PATH}/wbr914_base_driver
 )
 
+# Nodes executables
+add_executable(wbr914_velocity_listener
+src/velocity_listener.cpp
+include/wbr914_velocity_package/velocity_listener.h
+${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.h
+${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.cpp)
 
-add_executable(wbr914_velocity_listener src/velocity_listener.cpp include/wbr914_velocity_package/velocity_listener.h ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.h ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.cpp)
-add_executable(wbr914_velocity_publisher_basic src/velocity_publisher_basic.cpp include/wbr914_velocity_package/velocity_publisher_basic.h) 
-add_executable(wbr914_velocity_publisher_continuous_basic src/velocity_publisher_continuous_basic.cpp include/velocity_publisher_continuous_basic.h) 
+add_executable(wbr914_velocity_publisher_basic 
+src/velocity_publisher_basic.cpp
+include/wbr914_velocity_package/velocity_publisher_basic.h) 
+
+add_executable(wbr914_velocity_publisher_continuous_basic 
+src/velocity_publisher_continuous_basic.cpp
+include/wbr914_velocity_package/velocity_publisher_continuous_basic.h) 
 
 # Add needed ROS packages to the executables
 ament_target_dependencies(wbr914_velocity_listener rclcpp geometry_msgs)
