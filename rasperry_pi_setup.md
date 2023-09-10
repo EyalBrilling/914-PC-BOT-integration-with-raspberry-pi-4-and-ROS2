@@ -186,39 +186,27 @@ All logic of `hen to stop and run are in the responsibolty of other nodes. Make 
 
 It might be the case we can't connect to the pi 4 using a cable and you want to change the default network you connect to in a place without other networks. As ssh conenction require a network, we can set the wifi to be connected to before hand.
 
-1) In the utils folder,you have a file `automatic_network_connection`.
+1) In the utils folder,you have a file `automatic_network_connection.yaml`.
+
+```yaml
+network:
+  version: 2
+  renderer: networkd
+  wifis:
+    wlan0:
+      dhcp4: true
+      access-points:
+        "Your_SSID_Name":
+          password: "Your_Password"
+```
+Replace the following(what inside " ") with your specific network details:
+Your_SSID_Name: The SSID (name) of the Wi-Fi network.
+Your_Password: The Wi-Fi network password.
+
+2) Move the file from `utils` to `/etc/netplan/your-netplan-config.yaml`. From utils run:
 
 ```
-[connection]
-id=your_network_name
-type=wifi
-permissions=
-
-[wifi]
-ssid=your_wifi_ssid
-mode=infrastructure
-mac-address=your_mac_address
-
-[wifi-security]
-key-mgmt=wpa-psk
-psk=your_wifi_password
-
-[ipv4]
-method=auto
-
-[ipv6]
-method=auto
-```
-Replace the following with your specific network details:
-your_network_name: A descriptive name for the network.
-your_wifi_ssid: The SSID (name) of the Wi-Fi network.
-your_mac_address: The MAC address (optional, if you want to specify it).
-your_wifi_password: The Wi-Fi network password.
-
-2) Move the file from `utils` to `/etc/NetworkManager/system-connections/`. From utils run:
-
-```
-sudo cp ./automatic_network_connection /etc/NetworkManager/system-connections/
+sudo cp ./automatic_network_connection /etc/netplan/
 ```
 
 ## Errors handling
