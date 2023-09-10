@@ -181,3 +181,73 @@ sudo journalctl -u ros_package.service
 ## Note on safety
 
 All logic of `hen to stop and run are in the responsibolty of other nodes. Make sure your code is safe so that your robot `ont run a`ay and jump out the `indo`. In any code you `rite, on the deconstructor of your nodes publish a velocity of (0,0) command. This `ay, any lose of connection bet`een nodes `ill make the robot stop. 
+
+## Setup automatic network connection with ssh
+
+It might be the case we can't connect to the pi 4 using a cable and you want to change the default network you connect to in a place without other networks. As ssh conenction require a network, we can set the wifi to be connected to before hand.
+
+1) In the utils folder,you have a file `automatic_network_connection`.
+
+```
+[connection]
+id=your_network_name
+type=wifi
+permissions=
+
+[wifi]
+ssid=your_wifi_ssid
+mode=infrastructure
+mac-address=your_mac_address
+
+[wifi-security]
+key-mgmt=wpa-psk
+psk=your_wifi_password
+
+[ipv4]
+method=auto
+
+[ipv6]
+method=auto
+```
+Replace the following with your specific network details:
+your_network_name: A descriptive name for the network.
+your_wifi_ssid: The SSID (name) of the Wi-Fi network.
+your_mac_address: The MAC address (optional, if you want to specify it).
+your_wifi_password: The Wi-Fi network password.
+
+2) Move the file from `utils` to `/etc/NetworkManager/system-connections/`. From utils run:
+
+```
+sudo cp ./automatic_network_connection /etc/NetworkManager/system-connections/
+```
+
+## Errors handling
+
+### colcon build CMakeError
+
+```
+  By not providing "Findament_cmake.cmake" in CMAKE_MODULE_PATH this project
+  has asked CMake to find a package configuration file provided by
+  "ament_cmake", but CMake did not find one.
+  .
+  .
+  .
+```
+  
+  First,make sure you sourced ROS2 enviorment variables using:
+  
+```
+source /opt/ros/iron/setup.bash
+```
+  
+  If that still doesn't work - there is probably a problem with premission priviliages to the build folders because `sudo colcon build` was ran. solve it by:
+  
+ 1) Remove build folders in the src folder using
+ 
+ ```
+ sudo rm -rd src/install
+ ```
+ 
+ Do the same for build and log.
+ 
+ 2) build again `colcon build` without sudo
