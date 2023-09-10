@@ -199,7 +199,7 @@ network:
         "Your_SSID_Name":
           password: "Your_Password"
 ```
-Replace the following(what inside " ") with your specific network details:
+Replace the following(what inside " " includig " ") with your specific network details:
 Your_SSID_Name: The SSID (name) of the Wi-Fi network.
 Your_Password: The Wi-Fi network password.
 
