@@ -24,7 +24,7 @@ https://docs.ros.org/en/crystal/Tutorials/Writing-A-Simple-Cpp-Publisher-And-Sub
 
 ## Build ROS packages
 
-**To build the ROS packages run the folloing command from the src folder**
+**To build the ROS packages run the following command from the src folder**
 
 ```
 colcon build

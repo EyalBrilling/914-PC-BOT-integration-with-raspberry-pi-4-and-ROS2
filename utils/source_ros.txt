@@ -1,0 +1,2 @@
+source /opt/ros/iron/setup.bash
+source ${WBR914_PROJECT_PATH}/src/install/setup.bash
