@@ -214,7 +214,7 @@ Replace the following(what inside " " includig " ") with your specific network d
 Your_SSID_Name: The SSID (name) of the Wi-Fi network.
 Your_Password: The Wi-Fi network password.
 
-2) Move the file from `utils` to `/etc/netplan/your-netplan-config.yaml`. From utils run:
+2) Move the file from `utils` to `/etc/netplan/`. From utils run:
 
 ```shell
 sudo cp ./automatic_network_connection /etc/netplan/
