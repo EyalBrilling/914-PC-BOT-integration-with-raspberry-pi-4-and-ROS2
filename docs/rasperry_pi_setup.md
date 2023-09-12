@@ -1,6 +1,6 @@
 # Rasperry pi 4 setup
 
-We will now set the rasperry pi 4 to run a node that listens for twist commands(velocity information) and send them to the robot. this node will get commands from the nodes we wrote to send those twist commands.
+We will now set the rasperry pi 4 to run a node that listens for twist commands(velocity information) and in-turn send them to the robot. this node will wait for commands from other nodes.
 
 **another computer besides the pi4 is needed for the setup.**
 
@@ -27,13 +27,13 @@ Download Ubuntu Server to sim card with the help of the following guide:
 
 https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#1-overview
 
-![docs/photos/Server_pi4_install.png](docs/photos/Server_pi4_install.png)
+![docs/photos/Server_pi4_install.png](/docs/photos/Server_pi4_install.png)
 
 Setup all of the advanced options(network,ssh,keyboard layout):
 
-![docs/photos/install_settings_1.png](docs/photos/install_settings_1.png)
-![docs/photos/install_settings_2.png](docs/photos/install_settings_2.png)
-![docs/photos/install_settings_3.png](docs/photos/install_settings_3.png)
+![docs/photos/install_settings_1.png](/docs/photos/install_settings_1.png)
+![docs/photos/install_settings_2.png](/docs/photos/install_settings_2.png)
+![docs/photos/install_settings_3.png](/docs/photos/install_settings_3.png)
 
 Note about network connection - assuming ssh is used,this default network and direct cable network will be the only way you can connect to the pi4 using ssh which means your only way to use it. If more networks are needed to be added,See `Setup automatic network connection with ssh` section in this file for details.
 
@@ -43,16 +43,16 @@ To connect using ssh,use the following format:
 ssh <user_name>@<host_name>
 ```
 
-user_name and host_name(ending with .local) were both setup in the advances options in the download.
-Notice,in most guides the ip port is used for conencting instand of host_name,but was found to not actually work work(Connection refused is returned by pi4)
+user_name and host_name(ending with .local) were both setup in the advances options in the download.  
+Notice,in most guides the ip port is used for conencting instand of host_name,but was found to not actually work (Connection refused is returned by pi4)
 
 #### Ubuntu Desktop
 
-download **Ubuntu Desktop 22.04.03 LTS** r ** on the rasperry pi 4:
+download **Ubuntu Desktop 22.04.03 LTS** on the rasperry pi 4:
 
-![docs/photos/Desktop_pi4_install.png](docs/photos/Desktop_pi4_install.png)
+![docs/photos/Desktop_pi4_install.png](/docs/photos/Desktop_pi4_install.png)
 
-**Note** Not Raspberry Pi OS, ROS2 is less supported on it.**
+**Note** Not Raspberry Pi OS, ROS2 is less supported on it.
 
 ### Connect needed cables
 
@@ -60,9 +60,9 @@ Connect to the pi4 all neeeded cables - power(if using desktop - screen,keyboard
 
 ### Setup internet
 
-Power the pi 4 on. Connect in the pi4 to the internet you will use. On this internet all commands will be communicated between nodes. your pi4 and computer you send command from must be connected on the same internet.
+Power the pi 4 on. Connect the pi4 to the internet you will use. On this internet all commands will be communicated between nodes. your pi4 and the computer you send commands from must be connected on the same internet.
 
-## Setup workspace
+## Setup pi4 project workspace
 
 ### Clone the project to the pi4
 
@@ -78,11 +78,13 @@ git clone git@github.com:EyalBrilling/WhiteBox-PC-BOT-rpi4.git
 
 our Cmake uses an ENV variable of the project path. Add it to your .bashrc using the following command:
 
+```shell
 echo 'export WBR914_PROJECT_PATH="<Path_to_project>"' >> ~/.bashrc && source ~/.bashrc
+```
 
 ## Setup ROS2
 
-The following 2 steps can be done for you by running 'rasperry_pi_setup.sh' in utils:
+The following steps can be done for you by running 'rasperry_pi_setup.sh' in utils:
 
 1) Give script premissions:
 
@@ -112,11 +114,6 @@ Add your user to the dialout group:
 sudo usermod -aG dialout <your_username>
 ```
 
-## Get the velocity listener node executable
-
-Now we need to get the executable that runs the listener node.
-To do so, `e need to build it.
-
 ### Source setup.bash
 
 Needs to be done every terminal
@@ -125,7 +122,7 @@ Needs to be done every terminal
 source /opt/ros/iron/setup.bash
 ```
 
-### Build the velocity subscriber
+### Build the velocity listener
 
 In the src folder of the project, run:
 
@@ -151,11 +148,14 @@ Then try to run the code:
 ros2 run wbr914_velocity_package wbr914_velocity_listener
 ```
 
-## Setup the velocity subscriber node to run on pi4 startup.
+## Setup the velocity subscriber service to run on pi4 startup
 
-As the pi4 will be put on the robot,we want it to run the node and listen for commands on turning on. 
+As the pi4 will be put on the robot,we want it to run the node and listen for commands on turning on.  
+To do so,we will use a **service**. This service will run The velocity listener on startup of the pi4.  
 
-You have a shell file under 'utils' called "setting_node_on_startup.sh" to run the commands. The shell script assumes linux user name 'pi' is used. Look at it for explanation on what it does.
+You have a shell file under `utils` called `setting_node_on_startup.sh`. This script runs commands that create the service.
+
+ The shell script assumes linux user name 'pi' is used. Look at it for explanation on what it does.
 
 1) Give it premissions:
 
@@ -177,10 +177,19 @@ https://mshields.name/blog/2022-03-16-running-ros-nodes-on-boot/
 
 - This is a ros1 guide. ROS2 doesnt use roscore as there is not master node in it anymore. So the roscore.service isn't needed.
 
-**Test with:**
+### Test service
 
+The service will only active on the next reset of the pi4,so we start it manually.
+
+```shell
 sudo systemctl start roscore.service
+```
+
+Use status to see the service status. If it's not active,something went wrong.
+
+```shell
 sudo systemctl status roscore.service
+```
 
 If you get errors in service,journalctl is helpful:
 
@@ -188,9 +197,14 @@ If you get errors in service,journalctl is helpful:
 sudo journalctl -u ros_package.service
 ```
 
+If it works,that it! The pi4 is setup.
+
 ## Note on safety
 
-All logic of when to stop and run are in the responsibolty of other nodes. Make sure your code is safe so that your robot wont run away and jump out the window. The robot expects commands all the time,So once a node exits,assuming publishing of velocity commands stopped - robot will also stop. So just make sure there are no uncontrollable nodes running.
+All logic of when to stop and run are in the responsibility of other nodes - not the node that on the pi4.
+
+Make sure your code is safe so that your robot wont run away and jump out the window.
+The robot expects commands all the time,So once a node exits,assuming publishing of velocity commands stopped - the robot will also stop. So just make sure there are no uncontrollable nodes running.
 
 ## Setup automatic network connection with ssh
 
@@ -220,7 +234,7 @@ Your_Password: The Wi-Fi network password.
 sudo cp ./automatic_network_connection /etc/netplan/
 ```
 
-## Errors handling
+## Common errors and solution
 
 ### colcon build CMakeError
 
@@ -250,3 +264,17 @@ source /opt/ros/iron/setup.bash
 Do the same for build and log folders.
 
 2) build again `colcon build` without sudo
+
+### open() Premission denied
+
+Make sure user is part of the dialout group on linux by:
+
+```shell
+groups your_username
+```
+
+If not,add yourself to it:
+
+```shell
+sudo usermod -aG dialout <your_username>
+```
