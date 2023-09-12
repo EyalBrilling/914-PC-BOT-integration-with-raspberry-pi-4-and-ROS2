@@ -15,7 +15,7 @@ public:
       std::string input;
       std::vector< std::string > tokens;
       std::string token;
-      printf("Enter x linear velocity and x angular velocity or exit to stop publisher: ");
+      printf("Enter x linear velocity(m/sec) and x angular velocity(rads/sec) or exit to stop publisher: ");
 
       // Get input from user and save in a vector
       std::getline(std::cin, input);
