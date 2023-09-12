@@ -1,6 +1,6 @@
-# Rasperry pi 4 setup
+# Raspberry pi 4 setup
 
-We will now set the rasperry pi 4 to run a node that listens for twist commands(velocity information) and in-turn send them to the robot. this node will wait for commands from other nodes.
+We will now set the raspberry pi 4 to run a node that listens for twist commands(velocity information) and in-turn send them to the robot. this node will wait for commands from other nodes.
 
 **another computer besides the pi4 is needed for the setup.**
 
@@ -10,7 +10,7 @@ We will now set the rasperry pi 4 to run a node that listens for twist commands(
 
 Connect Your pi4 sd card to a USB stick and connect it to your computer.
 
-using the rasperry pi4 imager:
+using the raspberry pi4 imager:
 
 ```shell
 sudo apt install rpi-imager
@@ -48,7 +48,7 @@ Notice,in most guides the ip port is used for conencting instand of host_name,bu
 
 #### Ubuntu Desktop
 
-download **Ubuntu Desktop 22.04.03 LTS** on the rasperry pi 4:
+download **Ubuntu Desktop 22.04.03 LTS** on the raspberry pi 4:
 
 ![docs/photos/Desktop_pi4_install.png](/docs/photos/Desktop_pi4_install.png)
 
@@ -84,18 +84,18 @@ echo 'export WBR914_PROJECT_PATH="<Path_to_project>"' >> ~/.bashrc && source ~/.
 
 ## Setup ROS2
 
-The following steps can be done for you by running 'rasperry_pi_setup.sh' in utils:
+The following steps can be done for you by running 'raspberry_pi_setup.sh' in utils:
 
 1) Give script premissions:
 
 ```shell
-chmod +x rasperry_pi_setup.sh
+chmod +x raspberry_pi_setup.sh
 ```
 
 2) Run it:
 
 ```shell
-./rasperry_pi_setup.sh
+./raspberry_pi_setup.sh
 ```
 
 ### Download ROS2 on the pi4
