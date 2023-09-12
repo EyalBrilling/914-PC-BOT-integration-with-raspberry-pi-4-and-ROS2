@@ -1,4 +1,4 @@
-# WhiteBox914 Robot,rasperry pi 4 and ROS2 integration
+# WhiteBox914 Robot,raspberry pi 4 and ROS2 integration
 
 This project includes drivers,ROS2 nodes and instructions for using the WhiteBox914 in combination with raspberry pi 4 and ROS2.
 
@@ -7,12 +7,12 @@ Using this project will enable listening to robot commands via the pi4 on it's s
 This README gives an overview on starting using the project.  
 Other README in the project:
 
-- [docs/rasperry_pi_setup.md](docs/rasperry_pi_setup.md): Setup the raspberry pi 4 for listening to commands and transmit them to the robot on startup.
+- [docs/raspberry_pi_setup.md](docs/raspberry_pi_setup.md): Setup the raspberry pi 4 for listening to commands and transmit them to the robot on startup.
 - [src/README.md](src/README.md): Instructions for downloading ROS2,building packages and running them.
 
 ## Table of Contents
 
-- [WhiteBox914 Robot,rasperry pi 4 and ROS2 integration](#whitebox914-robotrasperry-pi-4-and-ros2-integration)
+- [WhiteBox914 Robot,raspberry pi 4 and ROS2 integration](#whitebox914-robotraspberry-pi-4-and-ros2-integration)
   - [Table of Contents](#table-of-contents)
   - [Setup the project](#setup-the-project)
     - [Setup the pi4](#setup-the-pi4)
@@ -38,7 +38,7 @@ Once all setup is done,the pi4 will wait for commands the moment it gets power.
 
 ### Setup the pi4
 
-Follow the instructions under [docs/rasperry_pi_setup.md](docs/rasperry_pi_setup.md)
+Follow the instructions under [docs/raspberry_pi_setup.md](docs/raspberry_pi_setup.md)
 
 ### Setup the workspace
 
