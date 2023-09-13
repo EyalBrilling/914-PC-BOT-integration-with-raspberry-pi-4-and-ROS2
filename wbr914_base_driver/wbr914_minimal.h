@@ -126,6 +126,9 @@ class wbr914_minimal{
     void SetActualPositionInTicks( int32_t left, int32_t right ); // Odometry
     int ResetRawPositions();  // Reset Odometry
     
+    // Getters of robot state via the USB
+    void GetPositionInTicks( int32_t* left, int32_t* right );
+
     int _fd;
     const char* _serial_port;
 

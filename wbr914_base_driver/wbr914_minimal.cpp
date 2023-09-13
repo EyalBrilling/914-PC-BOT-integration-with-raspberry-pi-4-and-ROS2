@@ -831,6 +831,21 @@ void wbr914_minimal::SetAccelerationProfile()
   SetContourMode( TrapezoidalProfile );
 }
 
+void wbr914_minimal::GetPositionInTicks( int32_t* left, int32_t* right )
+{
+  uint8_t ret[6];
+  if ( sendCmd0( LEFT_MOTOR, GETCMDPOS, 6, ret )<0)
+  {
+    printf( "Error in Left GetPositionInTicks\n" );
+  }
+  *left = -BytesToInt32( &ret[2] );
+  if ( sendCmd0( RIGHT_MOTOR, GETCMDPOS, 6, ret )<0 )
+  {
+    printf( "Error in Right GetPositionInTicks\n" );
+  }
+  *right = BytesToInt32( &ret[2] );
+}
+
 void wbr914_minimal::SetContourMode( ProfileMode_t prof )
 {
   uint8_t ret[2];
