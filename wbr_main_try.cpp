@@ -18,7 +18,7 @@ int main(){
     wbr914.SetVelocityInTicks(10000,10000);
     wbr914.UpdateM3();
     wbr914.GetVelocityInTicks(&left,&right);
-    printf("left:%i right:%i/n",left,right);
+    printf("left:%i right:%i Velocities ticks\n",left,right);
     }
     sleep(1);
     wbr914.SetVelocity(0,0);
