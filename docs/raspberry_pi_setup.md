@@ -244,7 +244,7 @@ It might be the case we can't connect to the pi 4 using a cable and you want to 
 2) Move the file from `utils` to `/etc/netplan/`. From utils run:
 
     ```shell
-    sudo cp ./automatic_network_connection /etc/netplan/
+    sudo cp ./<wifi_SSDI>_automatic_connection.yaml /etc/netplan/
     ```
 
     Once a yaml of this format is in the netplan folder,the pi4 will try to connect into it on powerup.
