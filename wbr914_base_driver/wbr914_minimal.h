@@ -36,6 +36,7 @@
 #define SETPROFILEMODE      0xA0
 #define GETVERSION          0x8F
 #define GETCMDPOS           0x1D // Get position
+#define GETCMDVEL           0x1E // Get velocity(of 2 wheels)
 #define SETPHASECOUNTS      0x75
 #define SETACTUALPOS        0x4D // Odometry
 
@@ -128,6 +129,7 @@ class wbr914_minimal{
     
     // Getters of robot state via the USB
     void GetPositionInTicks( int32_t* left, int32_t* right );
+    void GetVelocityInTicks( int32_t* left, int32_t* right );
 
     int _fd;
     const char* _serial_port;
