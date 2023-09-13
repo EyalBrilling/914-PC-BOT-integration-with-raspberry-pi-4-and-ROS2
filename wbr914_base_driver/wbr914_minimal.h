@@ -131,6 +131,8 @@ class wbr914_minimal{
 
     // Format casting functions
     int16_t BytesToInt16(unsigned char *ptr);
+    int32_t BytesToInt32( unsigned char *ptr );
+
 
     // Speed units coversion MPS<->Velocity
     int32_t MPS2Vel( float mps );

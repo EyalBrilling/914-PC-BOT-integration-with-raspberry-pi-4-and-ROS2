@@ -599,6 +599,26 @@ const char* wbr914_minimal::GetPMDErrorString( int rc )
   return bogusRC;
 }
 
+int32_t wbr914_minimal::BytesToInt32(unsigned char *ptr)
+{
+  unsigned char char0,char1,char2,char3;
+  int32_t data = 0;
+
+  char0 = ptr[3];
+  char1 = ptr[2];
+  char2 = ptr[1];
+  char3 = ptr[0];
+
+  data |=  ((int)char0)        & 0x000000FF;
+  data |= (((int)char1) << 8)  & 0x0000FF00;
+  data |= (((int)char2) << 16) & 0x00FF0000;
+  data |= (((int)char3) << 24) & 0xFF000000;
+
+  //this could just be ntohl
+
+  return data;
+}
+
 int16_t wbr914_minimal::BytesToInt16(unsigned char *ptr)
 {
   unsigned char char0,char1;
