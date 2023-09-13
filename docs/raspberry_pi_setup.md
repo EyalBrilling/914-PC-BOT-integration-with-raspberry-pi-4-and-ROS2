@@ -159,15 +159,15 @@ You have a shell file under `utils` called `setting_node_on_startup.sh`. This sc
 
 1) Give it premissions:
 
-```shell
-chmod +x setting_node_on_startup.sh 
-```
+    ```shell
+    chmod +x setting_node_on_startup.sh 
+    ```
 
 2) Run it:
 
-```shell
-sudo ./setting_node_on_startup.sh
-```
+    ```shell
+    sudo ./setting_node_on_startup.sh
+    ```
 
 The shell file is based on the following guide:
 
@@ -210,29 +210,44 @@ The robot expects commands all the time,So once a node exits,assuming publishing
 
 It might be the case we can't connect to the pi 4 using a cable and you want to change the default network you connect to in a place without other networks. As ssh conenction require a network, we can set the wifi to be connected to before hand.
 
-1) In the utils folder,you have a file `automatic_network_connection.yaml`.
+1) In the utils folder,you have a shell script `automatic_network_connection_gen.sh`. You can use it on the pi4 itself to create the  conenction yaml. First,give it premissions:
 
-```yaml
-network:
-  version: 2
-  renderer: networkd
-  wifis:
-    wlan0:
-      dhcp4: true
-      access-points:
-        "Your_SSID_Name":
-          password: "Your_Password"
-```
+    ```shell
+    chmod +x ./automatic_network_connection_gen.sh
+    ```
 
-Replace the following(what inside " " includig " ") with your specific network details:
-Your_SSID_Name: The SSID (name) of the Wi-Fi network.
-Your_Password: The Wi-Fi network password.
+    Then run it:
+
+    ```shell
+    ./automatic_network_connection_gen.sh
+    ```
+
+    It will ask you for the wifi name and its password.
+    What you will get is a file `<wifi_SSDI>_automatic_connection.yaml`:
+
+    ```yaml
+    network:
+      version: 2
+      renderer: networkd
+      wifis:
+        wlan0:
+          dhcp4: true
+          access-points:
+            "Your_SSID_Name":
+              password: "Your_Password"
+    ```
+
+    Where:  
+    **Your_SSID_Name**: The SSID (name) of the Wi-Fi network.  
+    **Your_Password**: The Wi-Fi network password.
 
 2) Move the file from `utils` to `/etc/netplan/`. From utils run:
 
-```shell
-sudo cp ./automatic_network_connection /etc/netplan/
-```
+    ```shell
+    sudo cp ./automatic_network_connection /etc/netplan/
+    ```
+
+    Once a yaml of this format is in the netplan folder,the pi4 will try to connect into it on powerup.
 
 ## Common errors and solution
 
