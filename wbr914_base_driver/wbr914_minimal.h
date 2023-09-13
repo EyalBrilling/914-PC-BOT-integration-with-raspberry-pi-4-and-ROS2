@@ -25,7 +25,7 @@
 #define GETSAMPLETIME       0x61
 #define SETOUTPUTMODE       0xE0
 #define RESET               0x39
-#define SETVEL              0x11
+#define SETVEL              0x11 // Set velocity
 #define UPDATE              0x1A
 #define SETMOTORMODE        0xDC
 #define SETMOTORCMD         0x77
@@ -35,6 +35,7 @@
 #define SETDECEL            0x91 // Deacceleration
 #define SETPROFILEMODE      0xA0
 #define GETVERSION          0x8F
+#define GETCMDPOS           0x1D // Get position
 #define SETPHASECOUNTS      0x75
 #define SETACTUALPOS        0x4D // Odometry
 
@@ -103,7 +104,9 @@ class wbr914_minimal{
     virtual ~wbr914_minimal();
     bool open_serial(const char* _serial_port);
 
-    // Robot commands
+    /*
+     Robot commands
+    */
     int MainSetup(); // Initiate robot driver comm and set needed variables
     void MainQuit(); // Quit the program safly by stopping motors and robot comm
     int  InitRobot(); 
@@ -113,6 +116,7 @@ class wbr914_minimal{
     void UpdateM3();
     const char* GetPMDErrorString( int rc );
 
+    // Setters of robot state via the USB 
     void SetVelocity( float mpsL, float mpsR );
     void SetVelocityInTicks( int32_t left, int32_t right );
     
