@@ -10,11 +10,15 @@ int main(){
     if (test){
         printf("good\n");
     }
+    int32_t left;
+    int32_t right;
     //wbr914.SetVelocity(10,10);
     wbr914.SetContourMode( VelocityContouringProfile );
     for(int i=0;i<=1000;i++){
-    wbr914.SetVelocityInTicks(30000,30000);
+    wbr914.SetVelocityInTicks(10000,10000);
     wbr914.UpdateM3();
+    wbr914.GetVelocityInTicks(&left,&right);
+    printf("left:%i right:%i/n",left,right);
     }
     sleep(1);
     wbr914.SetVelocity(0,0);
