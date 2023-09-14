@@ -47,6 +47,12 @@ void CmdVelListener::velocity_callback(const geometry_msgs::msg::Twist& msg){
     
 }
 
+void CmdVelListener::get_velocity_service(const std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Request> request,
+          std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Response> response) {
+
+
+          }
+
 int main(int argc, char * argv[]){
   rclcpp::init(argc, argv);
   rclcpp::spin(std::make_shared<CmdVelListener>());

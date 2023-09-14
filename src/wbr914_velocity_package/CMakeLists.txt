@@ -44,8 +44,11 @@ include/wbr914_velocity_package/velocity_publisher_continuous_basic.h)
 
 # Add needed ROS packages to the executables
 ament_target_dependencies(wbr914_velocity_listener rclcpp geometry_msgs)
+rosidl_target_interfaces(wbr914_velocity_listener ${PROJECT_NAME} "rosidl_typesupport_cpp")
 ament_target_dependencies(wbr914_velocity_publisher_basic rclcpp geometry_msgs)
 ament_target_dependencies(wbr914_velocity_publisher_continuous_basic rclcpp geometry_msgs)
+
+
 
 install(TARGETS
  wbr914_velocity_listener

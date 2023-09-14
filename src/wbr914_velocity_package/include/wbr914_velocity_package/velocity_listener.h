@@ -26,6 +26,9 @@ public:
     // Using placeholder _1 for keeping the option of using a ptr to Twist.
     sub = this->create_subscription<geometry_msgs::msg::Twist>(
       "velocity",10,std::bind(&CmdVelListener::velocity_callback,this,_1));
+
+    // Create the service that will return velocity(Twist message) on request
+    velocityGetService = this-> create_service<wbr914_velocity_package::srv::VelocityGet>("velocity_robot_get",&CmdVelListener::get_velocity_service);
   };
 
   ~CmdVelListener(){
@@ -46,8 +49,10 @@ private:
    z: 0.0
 */
   void velocity_callback(const geometry_msgs::msg::Twist& msg);
-
+  void get_velocity_service(const std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Request> request,
+        std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Response> response);
 
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub;
+  rclcpp::Service<wbr914_velocity_package::srv::VelocityGet>::SharedPtr velocityGetService;
   wbr914_minimal wbr914;
 };
