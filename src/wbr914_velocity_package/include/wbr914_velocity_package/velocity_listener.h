@@ -32,14 +32,14 @@ public:
 
     // Create the service that will return velocity(Twist message) on request
     velocityGetService = this-> create_service<wbr914_velocity_package::srv::VelocityGet>("velocity_get_robot",
-    std::bind(&CmdVelListener::get_velocity_service,this,_1,_2);
+    std::bind(&CmdVelListener::get_velocity_service,this,_1,_2));
   };
 
   ~CmdVelListener(){
     // Shutdown communication with wbr914
     wbr914.MainQuit();
   };
-
+  
 private:
 /*
  Twist message is expected in the cmd_vel topic
