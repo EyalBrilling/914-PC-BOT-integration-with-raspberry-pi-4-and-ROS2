@@ -48,7 +48,27 @@ void CmdVelListener::velocity_callback(const geometry_msgs::msg::Twist& msg){
 }
 
 void CmdVelListener::get_velocity_service(const std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Request> request,
-          std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Response> response) {
+          std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Response> response) {   
+
+            int32_t left_vel, right_vel;
+            wbr914.GetVelocityInTicks(&left_vel, &right_vel);
+
+            /*
+              Cast from wheels velocity in ticks to linear and angular velocity
+              ****Notice this is a simplified model given by the company****
+              If other model is found to be needed, implement it
+              in another same-format cpp file and compile against it.
+            */ 
+            double lv = wbr914.Vel2MPS( left_vel );
+            double rv = wbr914.Vel2MPS( right_vel );
+            double trans_vel = (lv + rv)/2;
+            double rot_vel = (lv - rv)/2;
+            // DEFAULT_AXLE_LENGTH/2.0 is the radius of the robot wheels
+            double rot_vel_rad = rot_vel/(DEFAULT_AXLE_LENGTH/2.0);
+
+            response->success = true;
+            response->response_twist.linear.x = trans_vel;
+            response->response_twist.angular.x = rot_vel_rad;
             return;
 
           }
