@@ -48,8 +48,6 @@ rosidl_target_interfaces(wbr914_velocity_listener ${PROJECT_NAME} "rosidl_typesu
 ament_target_dependencies(wbr914_velocity_publisher_basic rclcpp geometry_msgs)
 ament_target_dependencies(wbr914_velocity_publisher_continuous_basic rclcpp geometry_msgs)
 
-
-
 install(TARGETS
  wbr914_velocity_listener
  wbr914_velocity_publisher_basic
