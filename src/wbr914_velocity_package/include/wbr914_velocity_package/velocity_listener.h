@@ -31,7 +31,7 @@ public:
       "velocity",10,std::bind(&CmdVelListener::velocity_callback,this,_1));
 
     // Create the service that will return velocity(Twist message) on request
-    velocityGetService = this-> create_service<wbr914_velocity_package::srv::VelocityGet>("velocity_robot_get",
+    velocityGetService = this-> create_service<wbr914_velocity_package::srv::VelocityGet>("velocity_get_robot",
     std::bind(&CmdVelListener::get_velocity_service,this,_1,_2);
   };
 
