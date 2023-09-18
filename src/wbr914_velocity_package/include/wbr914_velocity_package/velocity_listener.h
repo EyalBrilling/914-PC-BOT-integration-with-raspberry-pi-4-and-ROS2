@@ -1,8 +1,10 @@
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "wbr914_minimal.h"
+#include <wbr914_velocity_package/srv/velocity_get.hpp>
 
 using std::placeholders::_1;
+using std::placeholders::_2;
 
 /*
   A ROS listener(subscriber) reading Twist messages from the 'velocity' topic.
@@ -28,7 +30,7 @@ public:
       "velocity",10,std::bind(&CmdVelListener::velocity_callback,this,_1));
 
     // Create the service that will return velocity(Twist message) on request
-    velocityGetService = this-> create_service<wbr914_velocity_package::srv::VelocityGet>("velocity_robot_get",&CmdVelListener::get_velocity_service);
+    velocityGetService = this-> create_service<wbr914_velocity_package::srv::VelocityGet>("velocity_robot_get",std::bind(&CmdVelListener::get_velocity_service),this,_1,_2);
   };
 
   ~CmdVelListener(){

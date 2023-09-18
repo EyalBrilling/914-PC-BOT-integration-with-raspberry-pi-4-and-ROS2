@@ -49,7 +49,7 @@ void CmdVelListener::velocity_callback(const geometry_msgs::msg::Twist& msg){
 
 void CmdVelListener::get_velocity_service(const std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Request> request,
           std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Response> response) {
-
+            return;
 
           }
 
