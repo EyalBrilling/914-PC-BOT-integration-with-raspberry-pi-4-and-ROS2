@@ -51,7 +51,12 @@ void CmdVelListener::get_velocity_service(const std::shared_ptr<wbr914_velocity_
           std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Response> response) {   
 
             int32_t left_vel, right_vel;
-            wbr914.GetVelocityInTicks(&left_vel, &right_vel);
+
+            if(wbr914.GetVelocityInTicks(&left_vel, &right_vel) < 0){
+              RCLCPP_ERROR(this->get_logger(), "Couldn't get velocity from robot using GetVelocityInTicks");
+              response->success = false;
+              return;
+            }
 
             /*
               Cast from wheels velocity in ticks to linear and angular velocity
