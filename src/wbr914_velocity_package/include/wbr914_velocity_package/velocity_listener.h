@@ -74,7 +74,7 @@ private:
   float64 x: X
   float64 y: 0.0
   float64 z: 0.0
-  float64 w: 0.0
+  float64 w: 1.0
 
   */
 

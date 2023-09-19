@@ -83,8 +83,11 @@ void CmdVelListener::get_position_service(const std::shared_ptr<wbr914_velocity_
             int32_t left_pos = -57;
             int32_t right_pos = -57;
             const double TWOPI = 2.0*M_PI;
-
-            wbr914.GetPositionInTicks(&left_pos,&right_pos);
+            if(wbr914.GetPositionInTicks(&left_pos,&right_pos) < 0){
+            RCLCPP_ERROR(this->get_logger(), "Couldn't get position from robot using GetPositionInTicks");
+            response->success = false;
+            return;
+            }
 
             // Calculate new position based on previous position and update it
             int32_t change_left  = left_pos - wbr914.last_lpos;
