@@ -6,7 +6,10 @@
   <description>TODO: Package description</description>
   <maintainer email="EyalBrilling@gmail.com">eyalbr</maintainer>
   <license>TODO: License declaration</license>
-
+ 
+  <!-- --> Tell ros there are interfaces in the package
+  <member_of_group>rosidl_interface_packages</member_of_group>
+  
   <buildtool_depend>
   ament_cmake
   </buildtool_depend>
@@ -14,6 +17,11 @@
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
+  
+  <!--Interface tools -->
+  <!--https://docs.ros.org/en/iron/Tutorials/Beginner-Client-Libraries/Custom-ROS2-Interfaces.html -->
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
 
 
   <test_depend>ament_lint_auto</test_depend>
