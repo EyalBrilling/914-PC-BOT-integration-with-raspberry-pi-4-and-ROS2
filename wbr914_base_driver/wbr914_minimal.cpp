@@ -605,6 +605,26 @@ const char* wbr914_minimal::GetPMDErrorString( int rc )
   return bogusRC;
 }
 
+int32_t wbr914_minimal::BytesToInt32(unsigned char *ptr)
+{
+  unsigned char char0,char1,char2,char3;
+  int32_t data = 0;
+
+  char0 = ptr[3];
+  char1 = ptr[2];
+  char2 = ptr[1];
+  char3 = ptr[0];
+
+  data |=  ((int)char0)        & 0x000000FF;
+  data |= (((int)char1) << 8)  & 0x0000FF00;
+  data |= (((int)char2) << 16) & 0x00FF0000;
+  data |= (((int)char3) << 24) & 0xFF000000;
+
+  //this could just be ntohl
+
+  return data;
+}
+
 int16_t wbr914_minimal::BytesToInt16(unsigned char *ptr)
 {
   unsigned char char0,char1;
@@ -815,6 +835,42 @@ void wbr914_minimal::SetAccelerationProfile()
     printf( "Error setting Decelleration profile\n" );
   }
   SetContourMode( TrapezoidalProfile );
+}
+
+int wbr914_minimal::GetPositionInTicks( int32_t* left, int32_t* right )
+{
+  uint8_t ret[6];
+  if ( sendCmd0( LEFT_MOTOR, GETCMDPOS, 6, ret )<0)
+  {
+    printf( "Error in Left GetPositionInTicks\n" );
+    return -1;
+  }
+  *left = -BytesToInt32( &ret[2] );
+  if ( sendCmd0( RIGHT_MOTOR, GETCMDPOS, 6, ret )<0 )
+  {
+    printf( "Error in Right GetPositionInTicks\n" );
+    return -1;
+  }
+  *right = BytesToInt32( &ret[2] );
+  return 0;
+}
+
+int wbr914_minimal::GetVelocityInTicks( int32_t* left, int32_t* right )
+{
+  uint8_t ret[6];
+  if ( sendCmd0( LEFT_MOTOR, GETCMDVEL, 6, ret )<0 )
+  {
+    printf( "Error in Left GetVelocityInTicks\n" );
+    return -1;
+  }
+  *left = -BytesToInt32( &ret[2] );
+  if ( sendCmd0( RIGHT_MOTOR, GETCMDVEL, 6, ret )<0 )
+  {
+    printf( "Error in Left GetVelocityInTicks\n" );
+    return -1;
+  }
+  *right = BytesToInt32( &ret[2] );
+  return 0;
 }
 
 void wbr914_minimal::SetContourMode( ProfileMode_t prof )
