@@ -5,15 +5,22 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# find dependencies. Add more as needed.
-find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(geometry_msgs REQUIRED)
-
 # Set the project path from the enviorment variable
 set(WBR914_PROJECT_PATH $ENV{WBR914_PROJECT_PATH})
 message(STATUS "WBR914_PROJECT_PATH: ${WBR914_PROJECT_PATH}")
+
+# find dependencies. Add more as needed.
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rosidl_default_generators REQUIRED) ## For interfaces
+find_package(std_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+
+# Add custom interfaces - services(srv) and messages(msg) here
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "srv/VelocityGet.srv"
+  DEPENDENCIES geometry_msgs
+)
 
 include_directories(
 include/wbr914_velocity_package
@@ -37,6 +44,7 @@ include/wbr914_velocity_package/velocity_publisher_continuous_basic.h)
 
 # Add needed ROS packages to the executables
 ament_target_dependencies(wbr914_velocity_listener rclcpp geometry_msgs)
+rosidl_target_interfaces(wbr914_velocity_listener ${PROJECT_NAME} "rosidl_typesupport_cpp")
 ament_target_dependencies(wbr914_velocity_publisher_basic rclcpp geometry_msgs)
 ament_target_dependencies(wbr914_velocity_publisher_continuous_basic rclcpp geometry_msgs)
 
