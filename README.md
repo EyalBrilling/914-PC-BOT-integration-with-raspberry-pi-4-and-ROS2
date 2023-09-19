@@ -19,6 +19,10 @@ Other README in the project:
     - [Setup the workspace](#setup-the-workspace)
       - [Add the project path as an ENV variable](#add-the-project-path-as-an-env-variable)
       - [Downloading ROS2 and build packages](#downloading-ros2-and-build-packages)
+  - [Communication with the robot](#communication-with-the-robot)
+    - [Topic `velocity_cmd`](#topic-velocity_cmd)
+    - [Service `velocity_get_robot`](#service-velocity_get_robot)
+    - [Service `position_get_robot`](#service-position_get_robot)
   - [Running a ROS2 node](#running-a-ros2-node)
   - [Additional Resources](#additional-resources)
     - [Technical information about the robot](#technical-information-about-the-robot)
@@ -56,6 +60,93 @@ export WBR914_PROJECT_PATH="/path/to/your/project"
 
 All ROS packages of the project are under `src` folder.  
 Read the [src/README.md](src/README.md) for instructions.
+
+## Communication with the robot
+
+On startup of the pi4, a ros2 node opens. that node is in charge of communicaton with the robot.  
+The node opens multi channels for communication:
+
+1) Topic called `velocity_cmd` on which velocity commands are sent to move the robot.
+2) Service called `velocity_get_robot` to get the current robot velocity.
+3) Service called `position_get_robot` to get the current robot position.
+
+![wbr914_node_structure](docs/photos/wbr914_node_structure.png)
+
+For implementation, see [the node file](src/wbr914_velocity_package/include/wbr914_velocity_package/velocity_listener.h)
+
+### Topic `velocity_cmd`
+
+The robot node listens for velocity commands on this topic.
+Every time a command is caught by the node - one call for movement command is sent to the robot.  
+**Notice that wbr914 expects to get commands continually, sending command only once will not move it.**
+
+There are currently two node files in the project you can use to send velocity commands to the topic:
+
+1) [velocity_publisher_continuous_basic](src/wbr914_velocity_package/include/wbr914_velocity_package/velocity_publisher_continuous_basic.h) - For sending commands infinitely, changing the velocity on user command whenever user wants. Recommended for first time.
+2) [velocity_publisher_basic](src/wbr914_velocity_package/include/wbr914_velocity_package/velocity_publisher_basic.h) - Requests user command every 10 seconds, sending the command to the robot for this duration.
+
+See the `Running a ROS2 node` section for instructions for running the nodes.
+
+You can also use the terminal:
+
+```shell
+ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "linear:
+  x: 0.05
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.05
+  y: 0.0
+  z: 0.0"
+```
+
+Notice the use of the Twist message type, only the x components are used.
+The units are m/sec for linear velocity and rads/sec for angular velocity.
+
+### Service `velocity_get_robot`
+
+The service is used for getting the current velocity of the wbr914.  
+It returns a Twist message and a bool value for success/failure of the request.
+Failure means that communication with the robot failed.
+
+In addition of calling the service from your code,you can test it using the terminal:
+
+```shell
+ros2 service call /velocity_get_robot wbr914_velocity_package/srv/VelocityGet
+```
+
+The node of wbr914 will respond with its current velocity.
+
+### Service `position_get_robot`
+
+The service is used for getting the current position of the wbr914.
+
+In addition of calling the service from your code,you can test it using the terminal:
+
+```shell
+ros2 service call /position_get_robot wbr914_velocity_package/srv/PositionGet 
+```
+
+It returns a Pose message and a bool value for success/failure of the request.
+A pose message is of the struct:
+
+```shell
+  position:
+    x: X
+    y: Y
+    z: 0.0
+  orientation:
+    x: X
+    y: 0.0
+    z: 0.0
+    w: 1.0
+```
+
+The X and Y in position represent the point at which the robot stands on, in relation to its starting position.  
+**Units are in meters.**  
+
+The X in orienatation orientation represent the robot axis around its middle.  
+ **Units are in radians**
 
 ## Running a ROS2 node
 
