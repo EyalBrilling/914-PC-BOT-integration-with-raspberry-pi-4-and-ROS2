@@ -80,7 +80,40 @@ void CmdVelListener::get_velocity_service(const std::shared_ptr<wbr914_velocity_
 
 void CmdVelListener::get_position_service(const std::shared_ptr<wbr914_velocity_package::srv::PositionGet::Request> request,
           std::shared_ptr<wbr914_velocity_package::srv::PositionGet::Response> response){
-            
+            int32_t left_pos = -57;
+            int32_t right_pos = -57;
+            const double TWOPI = 2.0*M_PI;
+
+            wbr914.GetPositionInTicks(&left_pos,&right_pos);
+
+            // Calculate new position based on previous position and update it
+            int32_t change_left  = left_pos - wbr914.last_lpos;
+            int32_t change_right = right_pos - wbr914.last_rpos;
+            wbr914.last_lpos = left_pos;
+            wbr914.last_rpos = right_pos;
+
+            // Calculate translational and rotational change
+            // translational change = avg of both changes
+            // rotational change is half the diff between both changes
+            double transchange = wbr914.Ticks2Meters( (change_left + change_right)>>1 );
+            double rotchange = wbr914.Ticks2Meters( (change_left - change_right)>>1 );
+
+            // calc total yaw, constraining from 0 to 2pi
+            wbr914._yaw += rotchange/(DEFAULT_AXLE_LENGTH/2.0);
+            if ( wbr914._yaw < 0 )
+              wbr914._yaw += TWOPI;
+          
+            if ( wbr914._yaw > TWOPI )
+              wbr914._yaw -= TWOPI;
+
+            // calc current x and y position
+            wbr914._x += ( transchange * cos( wbr914._yaw ));
+            wbr914._y += ( transchange * sin( wbr914._yaw ));
+
+            response->success = true;
+            response->response_pose.position.x = wbr914._x;
+            response->response_pose.position.y = wbr914._y;
+            response->response_pose.orientation.x = wbr914._yaw;
           }
 
 int main(int argc, char * argv[]){
