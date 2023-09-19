@@ -114,6 +114,7 @@ void CmdVelListener::get_position_service(const std::shared_ptr<wbr914_velocity_
             response->response_pose.position.x = wbr914._x;
             response->response_pose.position.y = wbr914._y;
             response->response_pose.orientation.x = wbr914._yaw;
+            return;
           }
 
 int main(int argc, char * argv[]){
