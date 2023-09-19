@@ -42,15 +42,15 @@ public:
   
 private:
 /*
- Twist message is expected in the cmd_vel topic
+ geomerty_msgs/Twist message is expected in the cmd_vel topic and returned by get_velocity service
  linear:
-   x: X
-   y: 0.0
-   z: 0.0
+   float64 x: X
+   float64 y: 0.0
+   float64 z: 0.0
  angular:
-   x: X
-   y: 0.0
-   z: 0.0
+   float64 x: X
+   float64 y: 0.0
+   float64 z: 0.0
 */
   void velocity_callback(const geometry_msgs::msg::Twist& msg);
   void get_velocity_service(const std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Request> request,
