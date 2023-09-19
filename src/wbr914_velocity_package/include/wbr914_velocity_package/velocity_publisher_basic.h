@@ -1,7 +1,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include "geometry_msgs/msg/twist.hpp"
 
-const std::string velocity_topic_name = "velocity";
+const std::string velocity_topic_name = "velocity_cmd";
 const int velocity_command_secs = 10;
 
 class CmdVelPublisher_basic: public rclcpp::Node {

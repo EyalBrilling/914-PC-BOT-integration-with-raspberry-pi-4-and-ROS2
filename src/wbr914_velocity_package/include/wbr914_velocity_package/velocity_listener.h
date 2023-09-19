@@ -14,7 +14,7 @@ using std::placeholders::_2;
 */
 class CmdVelListener : public rclcpp::Node{
 public:
-  CmdVelListener() : Node("vel_listener_node"){
+  CmdVelListener() : Node("wbr914_node"){
     // Open connection with wbr914 usb,ready all needed settings and enable motors
     int mainSetupFlag = wbr914.MainSetup();
     if(mainSetupFlag==0){
@@ -30,7 +30,7 @@ public:
     // Create the subscriber to a 'velocity' topic.
     // Using placeholder _1 for keeping the option of using a ptr to Twist.
     sub = this->create_subscription<geometry_msgs::msg::Twist>(
-      "velocity",10,std::bind(&CmdVelListener::velocity_callback,this,_1));
+      "velocity_cmd",10,std::bind(&CmdVelListener::velocity_callback,this,_1));
 
     // Create the service that will return velocity(Twist message) on request
     velocityGetService = this-> create_service<wbr914_velocity_package::srv::VelocityGet>("velocity_get_robot",
