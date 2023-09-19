@@ -142,7 +142,7 @@ class wbr914_minimal{
     // Speed units coversion MPS<->Velocity
     int32_t MPS2Vel( float mps );
     float Vel2MPS( int32_t vel );
-
+    float Ticks2Meters( int32_t ticks );
 
     // Odometry stuff
     int32_t last_lpos;

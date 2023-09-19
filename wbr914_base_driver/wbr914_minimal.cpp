@@ -333,6 +333,12 @@ float wbr914_minimal::Vel2MPS( int32_t count )
 
 }
 
+float wbr914_minimal::Ticks2Meters( int32_t ticks )
+{
+  return (float)( WHEEL_CIRC*((double)ticks/GEAR_RATIO)/ MOTOR_TICKS_PER_REV );
+}
+
+
 int wbr914_minimal::sendCmdCom( unsigned char address, unsigned char c,
 			int cmd_num, unsigned char* arg,
 			int ret_num, unsigned char * ret )
