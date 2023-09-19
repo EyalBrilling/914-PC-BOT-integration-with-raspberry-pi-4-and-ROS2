@@ -19,6 +19,7 @@ find_package(geometry_msgs REQUIRED)
 # Add custom interfaces - services(srv) and messages(msg) here
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/VelocityGet.srv"
+  "srv/PositionGet.srv"
   DEPENDENCIES geometry_msgs
 )
 
