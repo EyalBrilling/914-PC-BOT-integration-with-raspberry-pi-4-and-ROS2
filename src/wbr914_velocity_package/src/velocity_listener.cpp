@@ -78,6 +78,11 @@ void CmdVelListener::get_velocity_service(const std::shared_ptr<wbr914_velocity_
 
           }
 
+void CmdVelListener::get_position_service(const std::shared_ptr<wbr914_velocity_package::srv::PositionGet::Request> request,
+          std::shared_ptr<wbr914_velocity_package::srv::PositionGet::Response> response){
+            
+          }
+
 int main(int argc, char * argv[]){
   rclcpp::init(argc, argv);
   rclcpp::spin(std::make_shared<CmdVelListener>());
