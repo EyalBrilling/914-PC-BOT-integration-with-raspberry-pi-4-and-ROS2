@@ -2,7 +2,7 @@
 
 This project includes drivers,ROS2 nodes and instructions for using the WhiteBox914 in combination with raspberry pi 4 and ROS2.
 
-Using this project will enable listening to robot commands via the pi4 on it's startup,running ros nodes to communicate with the robot and write new packages for it.
+Using this project will enable listening to wbr914 commands via the pi4 on it's startup,running ros nodes to communicate with the wbr914 and write new packages for it.
 
 This README gives an overview on starting using the project.  
 Other README in the project:
