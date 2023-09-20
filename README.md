@@ -90,7 +90,7 @@ See the `Running a ROS2 node` section for instructions for running the nodes.
 You can also use the terminal:
 
 ```shell
-ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "linear:
+ros2 topic pub /velocity_cmd geometry_msgs/msg/Twist "linear:
   x: 0.05
   y: 0.0
   z: 0.0
