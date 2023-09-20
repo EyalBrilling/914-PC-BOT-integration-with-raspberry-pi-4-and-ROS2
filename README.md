@@ -9,6 +9,7 @@ Other README in the project:
 
 - [docs/raspberry_pi_setup.md](docs/raspberry_pi_setup.md): Setup the raspberry pi 4 for listening to commands and transmit them to the robot on startup.
 - [src/README.md](src/README.md): Instructions for downloading ROS2,building packages and running them.
+- [docs/developer_guide.md](docs/developer_guide.md): Guide for developers to create new ros2 nodes for communicating with the robot, and updating the robot driver itself.
 
 ## Table of Contents
 
@@ -184,7 +185,7 @@ Information about the robot sensors,power sources and more can be found under:
 
 ### Original robot drivers
 
-The previous drivers written by the company can be found under the [player_driver](/player_driver) folder.  
+The previous drivers written by the company can be found under the [/wbr914_base_driver/player_driver](/wbr914_base_driver/player_driver) folder.  
 In the previous iteration of the robot,player platform was used.
 
 Notice this driver uses player structs and functions. It won't work with ROS.
