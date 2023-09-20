@@ -16,6 +16,7 @@ fi
 sudo touch "$startup_shell_file"
 
 # Define the content to be added to /usr/sbin/ros_package_auto_launch
+## Notice! user-name used is "pi". change it if you use other user-name.
 startup_shell_content="#!/bin/bash
 source $WBR914_PROJECT_PATH/src/install/setup.bash
 source /etc/ros/env.sh

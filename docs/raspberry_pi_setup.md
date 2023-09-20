@@ -183,13 +183,13 @@ https://mshields.name/blog/2022-03-16-running-ros-nodes-on-boot/
 The service will only active on the next reset of the pi4,so we start it manually.
 
 ```shell
-sudo systemctl start roscore.service
+sudo systemctl start ros_package.service
 ```
 
 Use status to see the service status. If it's not active,something went wrong.
 
 ```shell
-sudo systemctl status roscore.service
+sudo systemctl status ros_package.service
 ```
 
 If you get errors in service,journalctl is helpful:
