@@ -9,6 +9,7 @@ Other README in the project:
 
 - [docs/raspberry_pi_setup.md](docs/raspberry_pi_setup.md): Setup the raspberry pi 4 for listening to commands and transmit them to the robot on startup.
 - [src/README.md](src/README.md): Instructions for downloading ROS2,building packages and running them.
+- [docs/developer_guide.md](docs/developer_guide.md): Guide for developers to create new ros2 nodes for communicating with the robot, and updating the robot driver itself.
 
 ## Table of Contents
 
