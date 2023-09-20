@@ -185,7 +185,7 @@ Information about the robot sensors,power sources and more can be found under:
 
 ### Original robot drivers
 
-The previous drivers written by the company can be found under the [player_driver](/player_driver) folder.  
+The previous drivers written by the company can be found under the [/wbr914_base_driver/player_driver](/wbr914_base_driver/player_driver) folder.  
 In the previous iteration of the robot,player platform was used.
 
 Notice this driver uses player structs and functions. It won't work with ROS.
