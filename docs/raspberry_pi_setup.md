@@ -1,6 +1,9 @@
 # Raspberry pi 4 setup
 
-We will now set the raspberry pi 4 to run a node that listens for twist commands(velocity information) and in-turn send them to the robot. this node will wait for commands from other nodes.
+We will now set the raspberry pi 4 to run a node on startup that:
+
+- Creates a topic,listening for twist commands(velocity information) which in-turn send them to the robot.
+- Creates 2 services that return position and velocity of the robot.
 
 **another computer besides the pi4 is needed for the setup.**
 
@@ -35,7 +38,7 @@ Setup all of the advanced options(network,ssh,keyboard layout):
 ![docs/photos/install_settings_2.png](/docs/photos/install_settings_2.png)
 ![docs/photos/install_settings_3.png](/docs/photos/install_settings_3.png)
 
-Note about network connection - assuming ssh is used,this default network and direct cable network will be the only way you can connect to the pi4 using ssh which means your only way to use it. If more networks are needed to be added,See `Setup automatic network connection with ssh` section in this file for details.
+Note about network connection - assuming ssh is used,this default network and direct cable network will be the only way you can connect to the pi4 using ssh which means your only way to use it. If more networks are needed to be added.  See ['Setup automatic network connection with ssh'](#setup-automatic-network-connection-with-ssh) section in this file for details.
 
 To connect using ssh,use the following format:
 
@@ -65,8 +68,6 @@ Power the pi 4 on. Connect the pi4 to the internet you will use. On this interne
 ## Setup pi4 project workspace
 
 ### Clone the project to the pi4
-
-we will use a listener(subscriber) ROS node to get velocity commands from other nodes. It is in the project itself.
 
  Clone the project using
 
@@ -122,7 +123,7 @@ Needs to be done every terminal
 source /opt/ros/iron/setup.bash
 ```
 
-### Build the velocity listener
+### Build the robot node
 
 In the src folder of the project, run:
 
@@ -151,7 +152,7 @@ ros2 run wbr914_velocity_package wbr914_velocity_listener
 ## Setup the velocity subscriber service to run on pi4 startup
 
 As the pi4 will be put on the robot,we want it to run the node and listen for commands on turning on.  
-To do so,we will use a **service**. This service will run The velocity listener on startup of the pi4.  
+To do so,we will use a **service**. This service will run The ros2 node on startup of the pi4.
 
 You have a shell file under `utils` called `setting_node_on_startup.sh`. This script runs commands that create the service.
 
@@ -175,7 +176,7 @@ https://mshields.name/blog/2022-03-16-running-ros-nodes-on-boot/
 
 **Notice changes from guide:**
 
-- This is a ros1 guide. ROS2 doesnt use roscore as there is not master node in it anymore. So the roscore.service isn't needed.
+- This is a ros1 guide. ROS2 doesnt use roscore as there is not master node in it anymore.
 
 ### Test service
 
