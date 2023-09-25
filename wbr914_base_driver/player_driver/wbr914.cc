@@ -135,16 +135,29 @@ static void LogMe( const char* s )
 }
 
 
-
+/*
+  Used by player,isn't used anymore.
+  Player used a config file with information about components used and usb path
+  for making the driver class.
+*/
 Driver* wbr914_Init(ConfigFile* cf, int section)
 {
   return (Driver*)(new wbr914(cf,section));
 }
 
+/*
+  Used by player,isn't used anymore.
+  For regastir the driver in Player. 
+*/
+
 void wbr914_Register(DriverTable* table)
 {
   table->AddDriver("wbr914", wbr914_Init);
 }
+
+/*
+  The parts with the player interfaces aren't needed.
+*/
 
 wbr914::wbr914(ConfigFile* cf, int section)
   : ThreadedDriver(cf,section,true,PLAYER_MSGQUEUE_DEFAULT_MAXLEN),
@@ -219,7 +232,9 @@ wbr914::wbr914(ConfigFile* cf, int section)
   _percentTorque = cf->ReadInt(section,"torque", DEFAULT_PERCENT_TORQUE );
   _debug = cf->ReadInt(section,"debug",0 );
   _fd = -1;
-
+  /*
+    In new driver
+  */
   // Constrain torque (power to motor phases) between 0 and 100.
   // Smaller numbers mean less torque, but less power used and less
   // heat generated. Not much use reducing the torque setting below
@@ -243,6 +258,10 @@ wbr914::wbr914(ConfigFile* cf, int section)
   // yaw in rads
 //   _robot2d_geom.pose.pyaw     = 0.0;
 
+
+  /*
+    Those are Player structs and aren't used
+  */
   // Width in meters
   _robot2d_geom.size.sw     = 0.37;
   // Length in meters
@@ -303,8 +322,9 @@ wbr914::wbr914(ConfigFile* cf, int section)
 
 }
 
-/**
-   Clean up any resources
+/*
+   Clean up any resources.
+  MainQuit is also used in the new driver
  */
 wbr914::~wbr914()
 {
@@ -317,6 +337,15 @@ wbr914::~wbr914()
 
 }
 
+
+  /*
+    All the functions in this are in the new driver.
+    Notice the use of ioctl and tcgetattr.They are also in the new driver.
+    They are used for saving the state of the usb at the start of connecting
+    with the robot and get reseted on disconnect. If this reset isn't dont,the robot
+    won't communicate on next connection and physicly disconnecting it from the usb will be needed.
+
+  */
 int wbr914::MainSetup()
 {
   struct termios term;
@@ -461,6 +490,9 @@ int wbr914::MainSetup()
   return(0);
 }
 
+/*
+  Also in the new driver
+*/
 int wbr914::InitRobot()
 {
 
@@ -487,7 +519,9 @@ int wbr914::InitRobot()
   return(0);
 }
 
-
+/*
+  Also in the new driver. safe closing of connection with robot.
+*/
 void wbr914::MainQuit()
 {
   if( this->_fd == -1 )
@@ -506,6 +540,9 @@ void wbr914::MainQuit()
   puts( "914 has been shut down" );
 }
 
+/*
+  Player function
+*/
 int wbr914::Subscribe( player_devaddr_t id )
 {
   // do the subscription
@@ -535,6 +572,9 @@ int wbr914::Subscribe( player_devaddr_t id )
   return( rc );
 }
 
+/*
+  Player function
+*/
 int wbr914::Unsubscribe( player_devaddr_t id )
 {
   int shutdownResult = Driver::Unsubscribe(id);
@@ -568,6 +608,9 @@ int wbr914::Unsubscribe( player_devaddr_t id )
   return(shutdownResult);
 }
 
+/*
+  Player function
+*/
 void wbr914::PublishData(void)
 {
   // TODO: something smarter about timestamping.
@@ -617,6 +660,10 @@ void wbr914::PublishData(void)
   }
 }
 
+/*
+  Player functions.
+  EnableMotors and ResetRawPositions is used in the new driver at init.
+*/
 void wbr914::Main()
 {
   int last_position_subscrcount=0;
@@ -671,6 +718,10 @@ void wbr914::Main()
   }
 }
 
+
+/*
+  Player function
+*/
 int wbr914::ProcessMessage(QueuePointer &resp_queue,
 			   player_msghdr * hdr,
 			   void * data)
@@ -685,6 +736,9 @@ int wbr914::ProcessMessage(QueuePointer &resp_queue,
   return(-1);
 }
 
+/*
+  Player function.
+*/
 int wbr914::HandleConfig(QueuePointer &resp_queue,
 			 player_msghdr * hdr,
 			 void * data)
@@ -812,7 +866,10 @@ int wbr914::HandleCommand(player_msghdr * hdr, void* data)
 
   return(-1);
 }
-
+/*
+  This function used a player struct to update the velocity of the robot.
+  Now the handling of the velocity is done in the robot node.
+*/
 void wbr914::HandleVelocityCommand(player_position2d_cmd_vel_t* velcmd)
 {
   // need to calculate the left and right velocities
@@ -860,12 +917,16 @@ void wbr914::HandleVelocityCommand(player_position2d_cmd_vel_t* velcmd)
     printf( "Motors not enabled\n" );
   }
 }
-
+/*
+  SetDigitalData isn't in the new driver. not unknown what it is for.
+*/
 void wbr914::HandleDigitalOutCommand( player_dio_data_t* doutCmd )
 {
   SetDigitalData( doutCmd );
 }
-
+  /*
+    Player function
+  */
 void wbr914::GetAllData( void )
 {
   // Don't bother reading them if nobody is subscribed to them
@@ -890,6 +951,10 @@ void wbr914::GetAllData( void )
   }
 }
 
+/*
+  Used for updating the position and velocity player structs for user.
+  Now happens in the robot node it self and seperated into two different services.
+*/
 void wbr914::GetPositionData( player_position2d_data_t* d )
 {
   // calculate position data
@@ -945,6 +1010,11 @@ void wbr914::GetPositionData( player_position2d_data_t* d )
   d->vel.pa = rot_vel_rad;
 }
 
+
+/*
+  *******Isnt implementated in the new driver********
+  Think it is for camera data.
+*/
 /* this will update the IR part of the client data
  * returns:
  */
@@ -999,6 +1069,11 @@ void wbr914::GetIRData(player_ir_data_t * d)
   }
 }
 
+
+/*
+  *** Isn't implementated in the new driver.
+*/
+
 /*
   Update the Analog input part of the client data
 
@@ -1024,6 +1099,11 @@ void wbr914::GetAnalogData(player_aio_data_t * d)
   }
 }
 
+
+
+/*
+  *** Isn't implementated in the new driver.
+*/
 /*
   Update the Digital input part of the client data
 
@@ -1043,6 +1123,10 @@ void wbr914::GetDigitalData(player_dio_data_t * d)
   d->bits = (uint32_t)( (din>>8) | (din<<8));
 }
 
+
+/*
+  *** Isn't implementated in the new driver.
+*/
 /*
   Set the Digital outputs on the robot
 
@@ -1115,6 +1199,10 @@ const char* wbr914::GetPMDErrorString( int rc )
   return bogusRC;
 }
 
+/*
+  In the new driver
+*/
+
 int wbr914::ResetRawPositions()
 {
   if ( _debug )
@@ -1140,6 +1228,10 @@ int wbr914::ResetRawPositions()
   _yaw = 0;
   return 0;
 }
+
+/*
+  In the new driver
+*/
 
 bool wbr914::RecvBytes( unsigned char*s, int len )
 {
@@ -1181,6 +1273,11 @@ bool wbr914::RecvBytes( unsigned char*s, int len )
 
   return false;
 }
+
+
+/*
+  In the new driver
+*/
 
 int wbr914::ReadBuf(unsigned char* s, size_t len)
 {
@@ -1290,6 +1387,10 @@ int wbr914::ReadBuf(unsigned char* s, size_t len)
 #endif
 }
 
+/*
+  In the new driver
+*/
+
 int wbr914::WriteBuf(unsigned char* s, size_t len)
 {
   size_t numwritten;
@@ -1349,6 +1450,10 @@ int wbr914::WriteBuf(unsigned char* s, size_t len)
 
   return numwritten;
 }
+
+/*
+  In the new driver
+*/
 
 int wbr914::sendCmdCom( unsigned char address, unsigned char c,
 			int cmd_num, unsigned char* arg,
@@ -1416,11 +1521,19 @@ int wbr914::sendCmdCom( unsigned char address, unsigned char c,
   return result;
 }
 
+/*
+  In the new driver
+*/
+
 int wbr914::sendCmd0( unsigned char address, unsigned char c,
 		      int ret_num, unsigned char * ret )
 {
   return sendCmdCom( address, c, 0, NULL, ret_num, ret );
 }
+
+/*
+  In the new driver
+*/
 
 int wbr914::sendCmd16( unsigned char address, unsigned char c,
 		       int16_t arg, int ret_num, unsigned char * ret )
@@ -1435,6 +1548,10 @@ int wbr914::sendCmd16( unsigned char address, unsigned char c,
   return sendCmdCom( address, c, 2, args, ret_num, ret );
 }
 
+/*
+  In the new driver
+*/
+
 int wbr914::sendCmd32( unsigned char address, unsigned char c,
 		       int32_t arg, int ret_num, unsigned char * ret )
 {
@@ -1448,7 +1565,9 @@ int wbr914::sendCmd32( unsigned char address, unsigned char c,
   return sendCmdCom( address, c, 4, args, ret_num, ret );
 }
 
-
+/*
+  *** Isn't implementated in the new driver.
+*/
 void wbr914::SetOdometry( player_position2d_set_odom_req_t* od )
 {
   unsigned char ret[2];
@@ -1467,6 +1586,9 @@ void wbr914::SetOdometry( player_position2d_set_odom_req_t* od )
   }
 }
 
+/*
+  *** Isn't implementated in the new driver.
+*/
 int wbr914::GetAnalogSensor(int s, short * val )
 {
   unsigned char ret[6];
@@ -1488,7 +1610,9 @@ int wbr914::GetAnalogSensor(int s, short * val )
   return 0;
 }
 
-
+/*
+  *** Isn't implementated in the new driver.
+*/
 void wbr914::GetDigitalIn( uint16_t* d )
 {
   unsigned char ret[6];
@@ -1513,6 +1637,7 @@ void wbr914::SetDigitalOut( uint16_t d )
 
 /*
   Robot commands
+  All of them in the new driver.
  */
 
 void wbr914::UpdateM3()
@@ -1560,7 +1685,10 @@ void wbr914::SetVelocityInTicks( int32_t left, int32_t right )
     printf( "Error setting velocity in ticks\n" );
   }
 }
-
+/*
+  With ros2 isn't expected to use Move commands on the level of the robot commands themself.
+  On the node level instand.
+*/
 void wbr914::Move( uint8_t chan, float meters )
 {
   uint8_t ret[6];
@@ -1589,6 +1717,9 @@ void wbr914::Move( float metersL, float metersR )
   Move( RIGHT_MOTOR,  metersR );
 }
 
+/*
+  In the robot node.
+*/
 void wbr914::SetPosition( uint8_t chan, float meters )
 {
   uint8_t ret[6];
@@ -1604,12 +1735,18 @@ void wbr914::SetPosition( uint8_t chan, float meters )
   }
 }
 
+/*
+  In the robot node
+*/
 void wbr914::SetPosition( float metersL, float metersR )
 {
   SetPosition( LEFT_MOTOR,   metersL );
   SetPosition( RIGHT_MOTOR,  metersR );
 }
 
+/*
+  In the robot node
+*/
 void wbr914::SetActualPositionInTicks( int32_t left, int32_t right )
 {
   uint8_t ret[6];
@@ -1620,6 +1757,9 @@ void wbr914::SetActualPositionInTicks( int32_t left, int32_t right )
   }
 }
 
+/*
+  In the robot node
+*/
 void wbr914::SetActualPosition( float metersL, float metersR )
 {
   uint8_t ret[6];
@@ -1630,6 +1770,9 @@ void wbr914::SetActualPosition( float metersL, float metersR )
   }
 }
 
+/*
+  In new driver
+*/
 void wbr914::GetPositionInTicks( int32_t* left, int32_t* right )
 {
   uint8_t ret[6];
@@ -1645,6 +1788,9 @@ void wbr914::GetPositionInTicks( int32_t* left, int32_t* right )
   *right = BytesToInt32( &ret[2] );
 }
 
+/*
+  In new driver
+*/
 void wbr914::GetVelocityInTicks( int32_t* left, int32_t* right )
 {
   uint8_t ret[6];
@@ -1660,6 +1806,9 @@ void wbr914::GetVelocityInTicks( int32_t* left, int32_t* right )
   *right = BytesToInt32( &ret[2] );
 }
 
+/*
+  In new driver
+*/
 void wbr914::SetAccelerationProfile()
 {
   uint8_t ret[2];
@@ -1679,6 +1828,9 @@ void wbr914::SetAccelerationProfile()
   SetContourMode( TrapezoidalProfile );
 }
 
+/*
+  In new driver
+*/
 void wbr914::Stop( int StopMode ) {
 
   unsigned char ret[8];
@@ -1782,7 +1934,9 @@ void wbr914::StopRobot()
   Stop( FULL_STOP );
 }
 
-
+/*
+  In new driver
+*/
 bool wbr914::EnableMotors( bool enable )
 {
   unsigned char ret[2];
@@ -1825,6 +1979,9 @@ bool wbr914::EnableMotors( bool enable )
   return ( true );
 }
 
+/*
+  In new driver
+*/
 void wbr914::SetContourMode( ProfileMode_t prof )
 {
   uint8_t ret[2];
@@ -1836,7 +1993,9 @@ void wbr914::SetContourMode( ProfileMode_t prof )
   }
 }
 
-
+/*
+  In new driver
+*/
 void wbr914::SetMicrosteps()
 {
   uint8_t ret[2];
@@ -1848,6 +2007,9 @@ void wbr914::SetMicrosteps()
   }
 }
 
+/*
+  All units and byte cast functions are in the new driver.
+*/
 
 int32_t wbr914::Meters2Ticks( float meters )
 {

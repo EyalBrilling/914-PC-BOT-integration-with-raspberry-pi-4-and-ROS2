@@ -128,8 +128,8 @@ class wbr914_minimal{
     int ResetRawPositions();  // Reset Odometry
     
     // Getters of robot state via the USB
-    void GetPositionInTicks( int32_t* left, int32_t* right );
-    void GetVelocityInTicks( int32_t* left, int32_t* right );
+    int GetPositionInTicks( int32_t* left, int32_t* right );
+    int GetVelocityInTicks( int32_t* left, int32_t* right );
 
     int _fd;
     const char* _serial_port;
@@ -142,7 +142,7 @@ class wbr914_minimal{
     // Speed units coversion MPS<->Velocity
     int32_t MPS2Vel( float mps );
     float Vel2MPS( int32_t vel );
-
+    float Ticks2Meters( int32_t ticks );
 
     // Odometry stuff
     int32_t last_lpos;
