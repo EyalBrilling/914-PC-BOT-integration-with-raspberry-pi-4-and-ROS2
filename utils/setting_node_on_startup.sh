@@ -21,7 +21,7 @@ startup_shell_content="#!/bin/bash
 source $WBR914_PROJECT_PATH/src/install/setup.bash
 source /etc/ros/env.sh
 export ROS_HOME=\$(echo ~pi)/.ros
-ros2 run wbr914_velocity_package wbr914_velocity_listener --wait
+ros2 run wbr914_package wbr914_node --wait
 # Operation Canceled
 exit 125
 "

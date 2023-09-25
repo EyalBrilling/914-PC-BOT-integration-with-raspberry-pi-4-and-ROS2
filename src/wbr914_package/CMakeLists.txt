@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(wbr914_velocity_package)
+project(wbr914_package)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -24,33 +24,33 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 )
 
 include_directories(
-include/wbr914_velocity_package
+include/wbr914_package
 ${WBR914_PROJECT_PATH}/wbr914_base_driver
 )
 
 # Nodes executables
-add_executable(wbr914_velocity_listener
+add_executable(wbr914_node
 src/velocity_listener.cpp
-include/wbr914_velocity_package/velocity_listener.h
+include/wbr914_package/velocity_listener.h
 ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.h
 ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.cpp)
 
 add_executable(wbr914_velocity_publisher_basic 
 src/velocity_publisher_basic.cpp
-include/wbr914_velocity_package/velocity_publisher_basic.h) 
+include/wbr914_package/velocity_publisher_basic.h) 
 
 add_executable(wbr914_velocity_publisher_continuous_basic 
 src/velocity_publisher_continuous_basic.cpp
-include/wbr914_velocity_package/velocity_publisher_continuous_basic.h) 
+include/wbr914_package/velocity_publisher_continuous_basic.h) 
 
 # Add needed ROS packages to the executables
-ament_target_dependencies(wbr914_velocity_listener rclcpp geometry_msgs)
-rosidl_target_interfaces(wbr914_velocity_listener ${PROJECT_NAME} "rosidl_typesupport_cpp")
+ament_target_dependencies(wbr914_node rclcpp geometry_msgs)
+rosidl_target_interfaces(wbr914_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
 ament_target_dependencies(wbr914_velocity_publisher_basic rclcpp geometry_msgs)
 ament_target_dependencies(wbr914_velocity_publisher_continuous_basic rclcpp geometry_msgs)
 
 install(TARGETS
- wbr914_velocity_listener
+ wbr914_node
  wbr914_velocity_publisher_basic
  wbr914_velocity_publisher_continuous_basic
   DESTINATION lib/${PROJECT_NAME})

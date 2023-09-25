@@ -12,7 +12,7 @@ find_package(rosidl_default_generators REQUIRED) ## For interfaces
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 ## For the services
-find_package(wbr914_velocity_package REQUIRED)
+find_package(wbr914_package REQUIRED)
 
 include_directories(
 include/node_examples

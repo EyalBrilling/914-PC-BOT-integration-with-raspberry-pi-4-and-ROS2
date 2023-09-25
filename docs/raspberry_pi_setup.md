@@ -131,7 +131,7 @@ In the src folder of the project, run:
 colcon build
 ```
 
-The executable is under `src/build/wbr914_velocity_package/wbr914_velocity_listener`
+The executable is under `src/build/wbr914_package/wbr914_node`
 
 ## Testing subscriber works
 
@@ -146,7 +146,7 @@ source install/setup.bash
 Then try to run the code:
 
 ```shell
-ros2 run wbr914_velocity_package wbr914_velocity_listener
+ros2 run wbr914_package wbr914_node
 ```
 
 ## Setup the velocity subscriber service to run on pi4 startup

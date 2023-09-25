@@ -80,7 +80,7 @@ The node opens multi channels for communication:
 
 ![wbr914_node_structure](docs/photos/wbr914_node_structure.png)
 
-For implementation, see [the node file](src/wbr914_velocity_package/include/wbr914_velocity_package/velocity_listener.h)
+For implementation, see [the node file](src/wbr914_package/include/wbr914_package/velocity_listener.h)
 
 ### Topic `velocity_cmd`
 
@@ -90,8 +90,8 @@ Every time a command is caught by the node - one call for movement command is se
 
 There are currently two node files in the project you can use to send velocity commands to the topic:
 
-1) [velocity_publisher_continuous_basic](src/wbr914_velocity_package/include/wbr914_velocity_package/velocity_publisher_continuous_basic.h) - For sending commands infinitely, changing the velocity on user command whenever user wants. Recommended for first time.
-2) [velocity_publisher_basic](src/wbr914_velocity_package/include/wbr914_velocity_package/velocity_publisher_basic.h) - Requests user command every 10 seconds, sending the command to the robot for this duration.
+1) [velocity_publisher_continuous_basic](src/wbr914_package/include/wbr914_package/velocity_publisher_continuous_basic.h) - For sending commands infinitely, changing the velocity on user command whenever user wants. Recommended for first time.
+2) [velocity_publisher_basic](src/wbr914_package/include/wbr914_package/velocity_publisher_basic.h) - Requests user command every 10 seconds, sending the command to the robot for this duration.
 
 See the `Running a ROS2 node` section for instructions for running the nodes.
 
@@ -120,7 +120,7 @@ Failure means that communication with the robot failed.
 In addition of calling the service from your code,you can test it using the terminal:
 
 ```shell
-ros2 service call /velocity_get_robot wbr914_velocity_package/srv/VelocityGet
+ros2 service call /velocity_get_robot wbr914_package/srv/VelocityGet
 ```
 
 The node of wbr914 will respond with its current velocity.
@@ -132,7 +132,7 @@ The service is used for getting the current position of the wbr914.
 In addition of calling the service from your code,you can test it using the terminal:
 
 ```shell
-ros2 service call /position_get_robot wbr914_velocity_package/srv/PositionGet 
+ros2 service call /position_get_robot wbr914_package/srv/PositionGet 
 ```
 
 It returns a Pose message and a bool value for success/failure of the request.
@@ -172,10 +172,10 @@ After building packages,Running ROS executables is done by running the command:
 ros2 run <package_name> <executable_name>
 ```
 
-For example,to run wbr914 publisher in the `wbr914_velocity_package` package run:
+For example,to run wbr914 publisher in the `wbr914_package` package run:
 
 ```shell
-ros2 run wbr914_velocity_package wbr914_velocity_publisher_continuous_basic
+ros2 run wbr914_package wbr914_velocity_publisher_continuous_basic
 ```
 
 This command wil run a publisher that sends continuous velocity commands to the velocity topic by user request.
