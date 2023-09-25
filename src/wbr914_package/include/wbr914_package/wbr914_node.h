@@ -1,8 +1,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
 #include "wbr914_minimal.h"
-#include <wbr914_velocity_package/srv/velocity_get.hpp>
-#include <wbr914_velocity_package/srv/position_get.hpp>
+#include <wbr914_package/srv/velocity_get.hpp>
+#include <wbr914_package/srv/position_get.hpp>
 
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -33,11 +33,11 @@ public:
       "velocity_cmd",10,std::bind(&CmdVelListener::velocity_callback,this,_1));
 
     // Create the service that will return velocity(Twist message) on request
-    velocityGetService = this-> create_service<wbr914_velocity_package::srv::VelocityGet>("velocity_get_robot",
+    velocityGetService = this-> create_service<wbr914_package::srv::VelocityGet>("velocity_get_robot",
     std::bind(&CmdVelListener::get_velocity_service,this,_1,_2));
 
     // Create the service that will return position(Pose message) on request
-    positionGetService = this-> create_service<wbr914_velocity_package::srv::PositionGet>("position_get_robot",
+    positionGetService = this-> create_service<wbr914_package::srv::PositionGet>("position_get_robot",
     std::bind(&CmdVelListener::get_position_service,this,_1,_2));
   };
 
@@ -60,8 +60,8 @@ private:
 */
   void velocity_callback(const geometry_msgs::msg::Twist& msg);
 
-  void get_velocity_service(const std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Request> request,
-        std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Response> response);
+  void get_velocity_service(const std::shared_ptr<wbr914_package::srv::VelocityGet::Request> request,
+        std::shared_ptr<wbr914_package::srv::VelocityGet::Response> response);
 
 /*
  geometry_msgs/Pose message is returned by the get_position service
@@ -78,12 +78,12 @@ private:
 
   */
 
-  void get_position_service(const std::shared_ptr<wbr914_velocity_package::srv::PositionGet::Request> request,
-        std::shared_ptr<wbr914_velocity_package::srv::PositionGet::Response> response);
+  void get_position_service(const std::shared_ptr<wbr914_package::srv::PositionGet::Request> request,
+        std::shared_ptr<wbr914_package::srv::PositionGet::Response> response);
     
 
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub;
-  rclcpp::Service<wbr914_velocity_package::srv::VelocityGet>::SharedPtr velocityGetService;
-  rclcpp::Service<wbr914_velocity_package::srv::PositionGet>::SharedPtr positionGetService;
+  rclcpp::Service<wbr914_package::srv::VelocityGet>::SharedPtr velocityGetService;
+  rclcpp::Service<wbr914_package::srv::PositionGet>::SharedPtr positionGetService;
   wbr914_minimal wbr914;
 };
