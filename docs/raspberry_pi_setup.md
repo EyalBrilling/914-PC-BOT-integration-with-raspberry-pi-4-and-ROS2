@@ -123,12 +123,12 @@ Needs to be done every terminal
 source /opt/ros/iron/setup.bash
 ```
 
-### Build the robot node
+## Build the robot node
 
-In the src folder of the project, run:
+**In the src folder of the project**, build the package with the node by running:
 
 ```shell
-colcon build
+colcon build --packages-select wbr914_package
 ```
 
 The executable is under `src/build/wbr914_package/wbr914_node`
@@ -156,7 +156,7 @@ To do so,we will use a **service**. This service will run The ros2 node on start
 
 You have a shell file under `utils` called `setting_node_on_startup.sh`. This script runs commands that create the service.
 
- The shell script assumes linux user name 'pi' is used. Look at it for explanation on what it does.
+ **The shell script assumes linux user name 'pi' is used**. Look at it for explanation on what it does.
 
 1) Give it premissions:
 
