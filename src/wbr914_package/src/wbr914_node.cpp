@@ -1,4 +1,4 @@
-#include "velocity_listener.h"
+#include "wbr914_node.h"
 
 
 void CmdVelListener::velocity_callback(const geometry_msgs::msg::Twist& msg){
@@ -47,8 +47,8 @@ void CmdVelListener::velocity_callback(const geometry_msgs::msg::Twist& msg){
     
 }
 
-void CmdVelListener::get_velocity_service(const std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Request> request,
-          std::shared_ptr<wbr914_velocity_package::srv::VelocityGet::Response> response) {   
+void CmdVelListener::get_velocity_service(const std::shared_ptr<wbr914_package::srv::VelocityGet::Request> request,
+          std::shared_ptr<wbr914_package::srv::VelocityGet::Response> response) {   
 
             int32_t left_vel, right_vel;
 
@@ -78,8 +78,8 @@ void CmdVelListener::get_velocity_service(const std::shared_ptr<wbr914_velocity_
 
           }
 
-void CmdVelListener::get_position_service(const std::shared_ptr<wbr914_velocity_package::srv::PositionGet::Request> request,
-          std::shared_ptr<wbr914_velocity_package::srv::PositionGet::Response> response){
+void CmdVelListener::get_position_service(const std::shared_ptr<wbr914_package::srv::PositionGet::Request> request,
+          std::shared_ptr<wbr914_package::srv::PositionGet::Response> response){
             int32_t left_pos = -57;
             int32_t right_pos = -57;
             const double TWOPI = 2.0*M_PI;
