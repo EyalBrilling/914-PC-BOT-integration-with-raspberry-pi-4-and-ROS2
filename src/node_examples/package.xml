@@ -13,7 +13,7 @@
   <depend>std_msgs</depend>
   <depend>geometry_msgs</depend>
   <!-- For the services in the package-->
-  <depend>wbr914_velocity_package</depend>
+  <depend>wbr914_package</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

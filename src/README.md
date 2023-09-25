@@ -48,10 +48,10 @@ After building packages,Running ROS executables is done by running the command:
 ros2 run <package_name> <executable_name>
 ```
 
-For example,to run wbr914 publisher in the `wbr914_velocity_package` package run:
+For example,to run wbr914 publisher in the `wbr914_package` package run:
 
 ```shell
-ros2 run wbr914_velocity_package wbr914_velocity_publisher_continuous_basic
+ros2 run wbr914_package wbr914_velocity_publisher_continuous_basic
 ```
 
 This command wil run the publisher that sends velocity commands to the robot.
