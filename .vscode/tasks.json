@@ -1,0 +1,26 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "colcon",
+			"args": [
+				"build",
+				"--symlink-install",
+				"--event-handlers",
+				"console_cohesion+",
+				"--base-paths",
+				"/home/eyalbr/WhiteBox-PC-BOT-rpi4/src",
+				"--cmake-args",
+				"-DCMAKE_BUILD_TYPE=Debug"
+			],
+			"problemMatcher": [
+				"$catkin-gcc"
+			],
+			"group": "build",
+			"label": "colcon: build",
+			"options": {
+                "cwd": "${workspaceFolder}/src"
+            },
+		}
+	]
+}

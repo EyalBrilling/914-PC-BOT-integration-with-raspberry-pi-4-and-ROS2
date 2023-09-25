@@ -10,6 +10,9 @@ src/install
 src/log
 src/build
 
+# ROS2 packages
+src/viz_ws
+
 # build files from top CMakeLists
 build/
 
