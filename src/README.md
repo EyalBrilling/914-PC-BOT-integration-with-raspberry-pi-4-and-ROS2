@@ -74,12 +74,12 @@ Can also open vsc command pallete(ctrl+shift+p) and search  "Tasks: Configure De
 			"args": [
 				"build",
 				"--symlink-install",
-				"--event-handlers",
+				"--event-handlers", 
 				"console_cohesion+",
 				"--base-paths",
-				"/home/<user_name>/WhiteBox-PC-BOT-rpi4/src",
+				"/home/<user_name>/WhiteBox-PC-BOT-rpi4/src", // Change the path to your src folder path
 				"--cmake-args",
-				"-DCMAKE_BUILD_TYPE=debug"
+				"-DCMAKE_BUILD_TYPE=debug" // Can change CMake build type(Debug, Release, RelWithDebInfo and MinSizeRel)
 			],
 			// Run the command from the src folder
 			"options": {
@@ -98,4 +98,4 @@ Can also open vsc command pallete(ctrl+shift+p) and search  "Tasks: Configure De
 }
 ```
 
-If it is the default one,it can be run by ctrl + shift + b
+If it is the default task,it can be run by ctrl + shift + b
