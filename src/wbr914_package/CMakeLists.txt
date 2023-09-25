@@ -35,24 +35,12 @@ include/wbr914_package/wbr914_node.h
 ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.h
 ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.cpp)
 
-add_executable(wbr914_velocity_publisher_basic 
-src/velocity_publisher_basic.cpp
-include/wbr914_package/velocity_publisher_basic.h) 
-
-add_executable(wbr914_velocity_publisher_continuous_basic 
-src/velocity_publisher_continuous_basic.cpp
-include/wbr914_package/velocity_publisher_continuous_basic.h) 
-
 # Add needed ROS packages to the executables
 ament_target_dependencies(wbr914_node rclcpp geometry_msgs)
 rosidl_target_interfaces(wbr914_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
-ament_target_dependencies(wbr914_velocity_publisher_basic rclcpp geometry_msgs)
-ament_target_dependencies(wbr914_velocity_publisher_continuous_basic rclcpp geometry_msgs)
 
 install(TARGETS
  wbr914_node
- wbr914_velocity_publisher_basic
- wbr914_velocity_publisher_continuous_basic
   DESTINATION lib/${PROJECT_NAME})
 
 
