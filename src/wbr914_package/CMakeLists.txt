@@ -30,8 +30,8 @@ ${WBR914_PROJECT_PATH}/wbr914_base_driver
 
 # Nodes executables
 add_executable(wbr914_node
-src/velocity_listener.cpp
-include/wbr914_package/velocity_listener.h
+src/wbr914_node.cpp
+include/wbr914_package/wbr914_node.h
 ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.h
 ${WBR914_PROJECT_PATH}/wbr914_base_driver/wbr914_minimal.cpp)
 

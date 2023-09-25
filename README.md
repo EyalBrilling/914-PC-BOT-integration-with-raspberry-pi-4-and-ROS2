@@ -80,7 +80,7 @@ The node opens multi channels for communication:
 
 ![wbr914_node_structure](docs/photos/wbr914_node_structure.png)
 
-For implementation, see [the node file](src/wbr914_package/include/wbr914_package/velocity_listener.h)
+For implementation, see [the node file](src/wbr914_package/include/wbr914_package/wbr914_node.h)
 
 ### Topic `velocity_cmd`
 

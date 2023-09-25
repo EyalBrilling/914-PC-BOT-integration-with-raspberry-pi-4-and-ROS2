@@ -7,7 +7,7 @@ echo "Notice! WBR914_PROJECT_PATH const inside 'setting_node_on_startup,sh' is $
 ##########################################################
 ## Make startup shell script
 
-startup_shell_file="/usr/sbin/velocity_listener_package_auto_launch"
+startup_shell_file="/usr/sbin/wbr914_node_auto_launch"
 
 # Check if the file exists; remove its previous if it does
 if [ -f "$startup_shell_file" ]; then
