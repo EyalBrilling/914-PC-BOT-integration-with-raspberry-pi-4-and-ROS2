@@ -1,5 +1,13 @@
 # ROS2 packages/nodes README.md
 
+Every folder in the src folder is a ROS2 package.
+The src folder structure:
+
+- **wbr914_package** : Contains:
+  - The node that runs on the robot itself via the pi4.
+  - Under srv, service declrations.
+- **node_examples** : example nodes that communicate with the robot node, showing how to send commands to it.
+
 ## Download ROS2
 
 https://docs.ros.org/en/iron/Installation/Ubuntu-Install-Debians.html
