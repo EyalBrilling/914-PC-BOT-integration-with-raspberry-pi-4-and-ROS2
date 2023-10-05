@@ -37,6 +37,7 @@ The project folder structure:
     - [Original robot drivers](#original-robot-drivers)
     - [WhiteBox-PC-BOT dropbox](#whitebox-pc-bot-dropbox)
     - [Player](#player)
+  - [Contributing](#contributing)
 
 ## Setup the project
 
@@ -207,3 +208,10 @@ https://www.dropbox.com/home/WhiteBox-PC-Bot
 wbr914 Isn't supposed to use player anymore, but if for some reason you want to to test it with player,you can download it from [player github](https://github.com/playerproject/player).
 
 And a manual with explanation of using player with the robot is found under [docs/robot_using_player/WBR_914_PC-BOT_old_Linux-Version.pdf](docs/robot_using_player/WBR_914_PC-BOT_old_Linux-Version.pdf)
+
+## Contributing
+
+Contributions in the form of additional examples and documentation are welcome.  
+If you are a student at the course and is interested in contributing to the project, Please talk with the instructors of the course for the consideration of extra credit.
+
+**See github issues for ideas**
