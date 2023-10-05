@@ -27,13 +27,19 @@ add_executable(wbr914_velocity_publisher_continuous_basic
 src/velocity_publisher_continuous_basic.cpp
 include/node_examples/velocity_publisher_continuous_basic.h) 
 
+add_executable(wbr914_wiggle 
+src/wiggle_robot.cpp
+include/node_examples/wiggle_robot.h) 
+
 # Add needed ROS packages to the executables
 ament_target_dependencies(wbr914_velocity_publisher_basic rclcpp geometry_msgs)
 ament_target_dependencies(wbr914_velocity_publisher_continuous_basic rclcpp geometry_msgs)
+ament_target_dependencies(wbr914_wiggle rclcpp geometry_msgs)
 
 install(TARGETS
  wbr914_velocity_publisher_basic
  wbr914_velocity_publisher_continuous_basic
+ wbr914_wiggle
   DESTINATION lib/${PROJECT_NAME})
 
 
