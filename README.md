@@ -1,4 +1,4 @@
-# WhiteBox914 Robot,raspberry pi 4 and ROS2 integration
+# 914-PC-BOT integration with raspberry pi 4 and ROS2
 
 This project includes drivers,ROS2 nodes and instructions for using the WhiteBox914 in combination with raspberry pi 4 and ROS2.
 
