@@ -1,5 +1,7 @@
 # 914-PC-BOT integration with raspberry pi 4 and ROS2
 
+<img src="docs/videos/pcbot_wiggle_gif.gif" alt="pcbot_wiggle_gif" width="40%"/>
+
 This project includes drivers,ROS2 nodes and instructions for using the WhiteBox914 in combination with raspberry pi 4 and ROS2.
 
 Using this project will enable listening to wbr914 commands via the pi4 on it's startup,running ros nodes to communicate with the wbr914 and write new packages for it.
@@ -20,7 +22,7 @@ The project folder structure:
 
 ## Table of Contents
 
-- [WhiteBox914 Robot,raspberry pi 4 and ROS2 integration](#whitebox914-robotraspberry-pi-4-and-ros2-integration)
+- [914-PC-BOT integration with raspberry pi 4 and ROS2](#914-pc-bot-integration-with-raspberry-pi-4-and-ros2)
   - [Table of Contents](#table-of-contents)
   - [Setup the project](#setup-the-project)
     - [Setup the pi4](#setup-the-pi4)
