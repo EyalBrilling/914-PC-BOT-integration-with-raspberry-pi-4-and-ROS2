@@ -73,6 +73,48 @@ int main(){
 }
 ```
 
+### Creating a new function in the API
+
+Creating a new function in the API requires three steps:
+
+1. Create a new driver function in the driver.
+2. Create a new API function in the API that will call the driver function.
+3. Binda ROS2 Node to the API function.
+
+Let's look at an example:
+
+1. SetVelocityInTicks is a driver function in the driver that talks with the robot:
+
+```c
+void wbr914_minimal::SetVelocityInTicks( int32_t left, int32_t right )
+{
+  uint8_t ret[2];
+  
+  if ( (sendCmd32( LEFT_MOTOR,  SETVEL, -left, 2, ret )<0)||
+       (sendCmd32( RIGHT_MOTOR, SETVEL, right, 2, ret )<0))
+  {
+    printf( "Error setting velocity in ticks\n" );
+  }
+}
+```
+
+2. `velocity_callback` in [wbr914_node.cpp](/src/wbr914_package/src/wbr914_node.cpp) :
+
+```c++
+void CmdVelListener::velocity_callback(const geometry_msgs::msg::Twist& msg);
+```
+
+It gets a Twist message from the user via the node and calls to SetVelocityInTicks after.
+
+1. Bind the API function to a node.
+
+```c++
+    sub = this->create_subscription<geometry_msgs::msg::Twist>(
+      "velocity_cmd",10,std::bind(&CmdVelListener::velocity_callback,this,_1));
+```
+
+Everytime the topic gets a message, the function is called.
+CmdVelListener class inheriates from rclcpp::Node.
 
 ## Creating new nodes
 
