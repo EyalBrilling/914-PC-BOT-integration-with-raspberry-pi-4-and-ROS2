@@ -4,6 +4,14 @@ Look at the package node_examples for nodes that communicate with the robot.
 
 It is highly recommanded to use the [ros2 guides](https://docs.ros.org/en/iron/Tutorials.html) and learn from them
 
+## Overview on communication
+
+The pi4 communicates with the M3 I/O and
+motor control board over a serial-to-USB driver. The serial commands are
+used to communicate with two PMD motion control chips that drive the
+stepper motors and control the onboard I/O.
+
+
 ## Creating new nodes
 
 Every new node requires some similar steps:
