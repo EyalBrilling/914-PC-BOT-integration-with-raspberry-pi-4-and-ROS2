@@ -11,6 +11,68 @@ motor control board over a serial-to-USB driver. The serial commands are
 used to communicate with two PMD motion control chips that drive the
 stepper motors and control the onboard I/O.
 
+## Using the wbr914 - program logic
+
+### Directly calling the driver functions
+
+Let's look at this simple example of directly calling the driver functions to move the robot:
+
+```C++
+// Including the header of the driver from which the functions are called.
+#include "wbr914_minimal.h"
+
+int main(){
+    // The driver is implemented in a class wbr914_minimal. when we need a function it always gets called from the class itself.
+    wbr914_minimal wbr914;
+
+    /*
+    This is the first step everytime the robot gets turned on.
+    It takes care of everything related to the serial port and variables saved on the M3.
+    1) Gets serial port information, needs to be known so we can reset it when we turn the robot off.(in deconstructor)
+    2) setups variables for communication speed and such
+    3) Reset variables on M3 like odometry data
+    */
+    int mainSetupFlag = wbr914.MainSetup();
+    if(mainSetupFlag==0){
+      printf("wbr914 MainSetup succeed\n");
+    }
+    /*
+        Enable the motors. You should hear a click.
+    */
+    bool enableMotorsFlag = wbr914.EnableMotors(true);
+    if(enableMotorsFlag==true){
+      printf("enableMotors is true\n");
+    }
+    /*
+    UpdateM3 motors.
+    To be called when we talk with the motors from some function. which are all functions that send commands to LEFT_MOTOR and RIGHT_MOTOR codes.
+    For example : sendCmd16( LEFT_MOTOR, SETPROFILEMODE, prof, 2, ret)<0)
+    */
+    wbr914.UpdateM3();
+    
+    /*
+      Tell M3 how fast de/acceleration should be.
+      Read more about profiles here:
+      https://www.pmdcorp.com/resources/type/articles/get/mathematics-of-motion-control-profiles-article
+      https://www.motioncontroltips.com/what-is-a-motion-profile/
+      There are 3 profiles(enum ProfileMode_t) but the original developers always use VelocityContouringProfile when handling velocity commands. So it is an option to use the other profiles in M3 but we use VelocityContouringProfile for now.
+    */
+    wbr914.SetContourMode( VelocityContouringProfile );
+
+    /* 
+      Loop to send commands of velocity
+    */
+    for(int i=0;i<=1000;i++){
+    wbr914.SetVelocityInTicks(10000,5000);
+    wbr914.UpdateM3();
+    }
+    /*
+    Closes connecting to serial port. Gets called from deconstructor too.
+    */
+    wbr914.MainQuit();
+}
+```
+
 
 ## Creating new nodes
 
