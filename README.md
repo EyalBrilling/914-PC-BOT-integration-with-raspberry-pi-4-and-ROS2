@@ -13,10 +13,12 @@ Other README in the project:
 - [src/README.md](src/README.md): Instructions for downloading ROS2,building packages and running them.
 - [docs/developer_guide.md](docs/developer_guide.md): Guide for developers to create new ros2 nodes for communicating with the robot, and updating the robot driver itself.
 
-The project folder structure:
+The project is divided into 2 different layers which can be seen in the folder structure:
 
-- **src** : ROS2 packages
-- **wbr914_base_driver** : The new robot driver and old player driver
+- **wbr914_base_driver** : First layer. The new robot driver and old player driver. For developers who aim to implement new functions that talk with the hardware
+- **src** : Second layer. ROS2 packages
+  - **wbr914_package** : API connecting wbr914 functions to ros2 nodes. <br> See [developer_guide](docs/developer_guide.md) for creating new API functions
+  - **node_examples** : Examples for calling the nodes.
 - **utils** : Files and scripts for setting up the project for the first time + quality of life files.
 - **docs**
 
