@@ -64,9 +64,9 @@
 
 #define DEFAULT_PERCENT_TORQUE  75
 
-
+// Read more here: https://www.pmdcorp.com/resources/type/articles/get/mathematics-of-motion-control-profiles-article
 typedef enum {
-  TrapezoidalProfile = 0,
+  TrapezoidalProfile = 0, // Decelerate faster than accelerating
   VelocityContouringProfile,
   SCurveProfile,
 } ProfileMode_t;

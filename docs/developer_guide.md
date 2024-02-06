@@ -4,6 +4,118 @@ Look at the package node_examples for nodes that communicate with the robot.
 
 It is highly recommanded to use the [ros2 guides](https://docs.ros.org/en/iron/Tutorials.html) and learn from them
 
+## Overview on communication
+
+The pi4 communicates with the M3 I/O and
+motor control board over a serial-to-USB driver. The serial commands are
+used to communicate with two PMD motion control chips that drive the
+stepper motors and control the onboard I/O.
+
+## Using the wbr914 - program logic
+
+### Directly calling the driver functions
+
+Let's look at this simple example of directly calling the driver functions to move the robot:
+
+```C++
+// Including the header of the driver from which the functions are called.
+#include "wbr914_minimal.h"
+
+int main(){
+    // The driver is implemented in a class wbr914_minimal. when we need a function it always gets called from the class itself.
+    wbr914_minimal wbr914;
+
+    /*
+    This is the first step everytime the robot gets turned on.
+    It takes care of everything related to the serial port and variables saved on the M3.
+    1) Gets serial port information, needs to be known so we can reset it when we turn the robot off.(in deconstructor)
+    2) setups variables for communication speed and such
+    3) Reset variables on M3 like odometry data
+    */
+    int mainSetupFlag = wbr914.MainSetup();
+    if(mainSetupFlag==0){
+      printf("wbr914 MainSetup succeed\n");
+    }
+    /*
+        Enable the motors. You should hear a click.
+    */
+    bool enableMotorsFlag = wbr914.EnableMotors(true);
+    if(enableMotorsFlag==true){
+      printf("enableMotors is true\n");
+    }
+    /*
+    UpdateM3 motors.
+    To be called when we talk with the motors from some function. which are all functions that send commands to LEFT_MOTOR and RIGHT_MOTOR codes.
+    For example : sendCmd16( LEFT_MOTOR, SETPROFILEMODE, prof, 2, ret)<0)
+    */
+    wbr914.UpdateM3();
+    
+    /*
+      Tell M3 how fast de/acceleration should be.
+      Read more about profiles here:
+      https://www.pmdcorp.com/resources/type/articles/get/mathematics-of-motion-control-profiles-article
+      https://www.motioncontroltips.com/what-is-a-motion-profile/
+      There are 3 profiles(enum ProfileMode_t) but the original developers always use VelocityContouringProfile when handling velocity commands. So it is an option to use the other profiles in M3 but we use VelocityContouringProfile for now.
+    */
+    wbr914.SetContourMode( VelocityContouringProfile );
+
+    /* 
+      Loop to send commands of velocity
+    */
+    for(int i=0;i<=1000;i++){
+    wbr914.SetVelocityInTicks(10000,5000);
+    wbr914.UpdateM3();
+    }
+    /*
+    Closes connecting to serial port. Gets called from deconstructor too.
+    */
+    wbr914.MainQuit();
+}
+```
+
+### Creating a new function in the API
+
+Creating a new function in the API requires three steps:
+
+1. Create a new driver function in the driver.
+2. Create a new API function in the API that will call the driver function.
+3. Binda ROS2 Node to the API function.
+
+Let's look at an example:
+
+1. SetVelocityInTicks is a driver function in the driver that talks with the robot:
+
+```c
+void wbr914_minimal::SetVelocityInTicks( int32_t left, int32_t right )
+{
+  uint8_t ret[2];
+  
+  if ( (sendCmd32( LEFT_MOTOR,  SETVEL, -left, 2, ret )<0)||
+       (sendCmd32( RIGHT_MOTOR, SETVEL, right, 2, ret )<0))
+  {
+    printf( "Error setting velocity in ticks\n" );
+  }
+}
+```
+
+2. `velocity_callback` in [wbr914_node.cpp](/src/wbr914_package/src/wbr914_node.cpp) :
+
+```c++
+void CmdVelListener::velocity_callback(const geometry_msgs::msg::Twist& msg);
+```
+
+It gets a Twist message from the user via the node and calls to SetVelocityInTicks after.
+
+1. Bind the API function to a node.
+
+```c++
+    sub = this->create_subscription<geometry_msgs::msg::Twist>(
+      "velocity_cmd",10,std::bind(&CmdVelListener::velocity_callback,this,_1));
+```
+
+Everytime the topic gets a message, the function is called.
+CmdVelListener class inheriates from rclcpp::Node.
+
 ## Creating new nodes
 
 Every new node requires some similar steps:
