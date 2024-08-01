@@ -1,0 +1,30 @@
+---
+bool success
+
+#IR1-IR5 are horizontal on the bumper.  data is raw voltage 0-5V
+float32 data_ir1
+float32 data_ir2
+float32 data_ir3
+float32 data_ir4
+float32 data_ir5
+
+#IR6 is a long range 'beak' sensors
+float32 data_ir6
+
+float32 data_ir7
+
+#IR8 is a long range 'beak' sensors
+float32 data_ir8
+
+# Sharp GP2Y0A21 sensors 10-80cm
+float32 range_ir1
+float32 range_ir2
+float32 range_ir3
+float32 range_ir4
+float32 range_ir5
+
+# Beak side firing sensors are longer range sensors
+# Sharp GP2Y0A02 sensors 20-150cm
+float32 range_ir6
+float32 range_ir7 ## Sharp GP2Y0A21 sensors 10-80cm
+float32 range_ir8
