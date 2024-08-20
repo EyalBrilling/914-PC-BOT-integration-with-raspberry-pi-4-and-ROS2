@@ -103,8 +103,9 @@ class wbr914_m3_io
     int  WriteBuf(unsigned char* s, size_t len);
 
     //Read A/D's
-    int  GetAnalogSensor(int s, short * val );
+    int GetAnalogSensor(int s, short * val );
 
+    int SetDigitalOut( unsigned short digOut );
 
     public:
     wbr914_m3_io();
@@ -126,6 +127,7 @@ class wbr914_m3_io
     // Setters of robot state via the USB 
     void SetVelocity( float mpsL, float mpsR );
     void SetVelocityInTicks( int32_t left, int32_t right );
+    int SetDio(uint16_t data);
     
     void SetContourMode( ProfileMode_t prof );
     void SetMicrosteps();

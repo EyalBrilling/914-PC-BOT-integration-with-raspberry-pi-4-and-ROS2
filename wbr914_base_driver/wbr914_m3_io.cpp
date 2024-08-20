@@ -310,6 +310,16 @@ void wbr914_m3_io::SetVelocityInTicks( int32_t left, int32_t right )
   }
 }
 
+int wbr914_m3_io::SetDio(uint16_t data)
+{
+  // Byte flip the data to make the Output to from the
+  // optional I/O board show up in the upper byte.
+  data = ( (data>>8) | (data<<8) );
+
+  // Always set 16 bits of data
+  return (SetDigitalOut( data ));
+}
+
 int wbr914_m3_io::GetIRData(float* voltages, float* ranges)
 {
   // At 80cm Vmin=0.25V Vtyp=0.4V Vmax=0.55V
@@ -408,6 +418,17 @@ float wbr914_m3_io::Ticks2Meters( int32_t ticks )
   return (float)( WHEEL_CIRC*((double)ticks/GEAR_RATIO)/ MOTOR_TICKS_PER_REV );
 }
 
+int wbr914_m3_io::SetDigitalOut( uint16_t d )
+{
+  unsigned char ret[2];
+
+  if ( sendCmd32( 0, WRITEDIGITAL, d, 2, ret ) < 0 )
+  {
+    printf( "Error setting Digital output values\n" );
+    return -1;
+  }
+  return 0;
+}
 
 int wbr914_m3_io::sendCmdCom( unsigned char address, unsigned char c,
 			int cmd_num, unsigned char* arg,
