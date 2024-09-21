@@ -15,7 +15,7 @@
 #define MOTOR_DEF_MAX_SPEED 0.3
 
 /* Conenction */
-#define DEFAULT_WBR914_PORT "/dev/ttyUSB0" // Default robot port via USB
+#define DEFAULT_WBR914_PORT "/dev/serial/by-id/usb-FTDI_USB__-__Serial-if00-port0" // Default robot port via USB
 #define DELAY_US 10000
 
 /* Math const */
@@ -104,7 +104,7 @@ class wbr914_m3_io
 
     //Read A/D's
     int GetAnalogSensor(int s, short * val );
-
+    int GetDigitalIn( uint16_t* d );
     int SetDigitalOut( unsigned short digOut );
 
     public:
@@ -139,6 +139,7 @@ class wbr914_m3_io
     int GetPositionInTicks( int32_t* left, int32_t* right );
     int GetVelocityInTicks( int32_t* left, int32_t* right );
     int GetIRData(float* voltages, float* ranges);
+    int GetDio(uint16_t* data);
 
     int _fd;
     const char* _serial_port;

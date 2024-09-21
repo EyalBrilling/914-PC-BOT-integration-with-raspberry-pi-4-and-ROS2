@@ -320,6 +320,27 @@ int wbr914_m3_io::SetDio(uint16_t data)
   return (SetDigitalOut( data ));
 }
 
+/*
+  Update the Digital input part of the client data
+
+  We cannot reliably detect whether there is an I/O
+  board attached to the M3 so blindly return the data.
+ */
+int wbr914_m3_io::GetDio(uint16_t* data)
+{
+  // Read the 16 digital inputs
+  uint16_t din;
+  int ret;
+
+    ret = GetDigitalIn( &din );
+
+  // Byte flip the data to make the Input from the
+  // optional I/O board show up in the upper byte.
+  *data = ( (din>>8) | (din<<8));
+
+  return ret;
+}
+
 int wbr914_m3_io::GetIRData(float* voltages, float* ranges)
 {
   // At 80cm Vmin=0.25V Vtyp=0.4V Vmax=0.55V
@@ -430,6 +451,20 @@ int wbr914_m3_io::SetDigitalOut( uint16_t d )
   return 0;
 }
 
+int wbr914_m3_io::GetDigitalIn( uint16_t* d )
+{
+  unsigned char ret[6];
+
+  if ( sendCmd16( 0, READDIGITAL, 0, 4, ret )<0)
+  {
+    printf( "Error reading Digital input values\n" );
+    return -1;
+  }
+
+  *d = (uint16_t)BytesToInt16(  &(ret[2]) );
+  return 1;
+}
+
 int wbr914_m3_io::sendCmdCom( unsigned char address, unsigned char c,
 			int cmd_num, unsigned char* arg,
 			int ret_num, unsigned char * ret )
@@ -486,7 +521,7 @@ int wbr914_m3_io::sendCmdCom( unsigned char address, unsigned char c,
     int rc;
     if( (rc = ReadBuf( ret, ret_num )) < 0 )
     {
-      //      printf( "failed to read response\n" );
+      printf( "failed to read response\n" );
       result = -1;
     }
   }

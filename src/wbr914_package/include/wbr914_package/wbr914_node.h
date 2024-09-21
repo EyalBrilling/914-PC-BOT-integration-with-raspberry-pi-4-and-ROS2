@@ -94,5 +94,5 @@ private:
   rclcpp::Service<wbr914_package::srv::VelocityGet>::SharedPtr velocityGetService;
   rclcpp::Service<wbr914_package::srv::PositionGet>::SharedPtr positionGetService;
   rclcpp::Service<wbr914_package::srv::IrdataGet>::SharedPtr irdataGetService;
-  wbr914_minimal wbr914;
+  wbr914_m3_io wbr914;
 };
