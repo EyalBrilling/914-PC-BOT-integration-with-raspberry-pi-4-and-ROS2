@@ -120,6 +120,40 @@ void CmdVelListener::get_position_service(const std::shared_ptr<wbr914_package::
             return;
           }
 
+void CmdVelListener::get_irdata_service(const std::shared_ptr<wbr914_package::srv::IrdataGet::Request> request,
+          std::shared_ptr<wbr914_package::srv::IrdataGet::Response> response)
+          {
+            float voltages[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+            float ranges[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+            if (wbr914.GetIRData(voltages, ranges)==0)
+            {
+              response->data_ir1 = voltages[0];  
+              response->data_ir2 = voltages[1];
+              response->data_ir3 = voltages[2];
+              response->data_ir4 = voltages[3];
+              response->data_ir5 = voltages[4];
+              response->data_ir6 = voltages[5];
+              response->data_ir7 = voltages[6];
+              response->data_ir8 = voltages[7];
+              response->range_ir1 = ranges[0];
+              response->range_ir2 = ranges[1];
+              response->range_ir3 = ranges[2];
+              response->range_ir4 = ranges[3];
+              response->range_ir5 = ranges[4];
+              response->range_ir6 = ranges[5];
+              response->range_ir7 = ranges[6];
+              response->range_ir8 = ranges[7];
+              response->success = true;
+            }
+            else
+            {
+              RCLCPP_ERROR(this->get_logger(), "Couldn't get IR date from robot using GetIRData");
+              response->success = false;
+              return;
+            }
+          }
+
 int main(int argc, char * argv[]){
   rclcpp::init(argc, argv);
   rclcpp::spin(std::make_shared<CmdVelListener>());

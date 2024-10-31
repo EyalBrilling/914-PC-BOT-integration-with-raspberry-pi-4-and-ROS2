@@ -1,8 +1,9 @@
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/twist.hpp"
-#include "wbr914_minimal.h"
+#include "wbr914_m3_io.h"
 #include <wbr914_package/srv/velocity_get.hpp>
 #include <wbr914_package/srv/position_get.hpp>
+#include <wbr914_package/srv/irdata_get.hpp>
 
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -39,6 +40,10 @@ public:
     // Create the service that will return position(Pose message) on request
     positionGetService = this-> create_service<wbr914_package::srv::PositionGet>("position_get_robot",
     std::bind(&CmdVelListener::get_position_service,this,_1,_2));
+    
+    // Create the service that will return IR data on request
+    irdataGetService = this-> create_service<wbr914_package::srv::IrdataGet>("irdata_get_robot",
+    std::bind(&CmdVelListener::get_irdata_service,this,_1,_2));
   };
 
   ~CmdVelListener(){
@@ -81,9 +86,13 @@ private:
   void get_position_service(const std::shared_ptr<wbr914_package::srv::PositionGet::Request> request,
         std::shared_ptr<wbr914_package::srv::PositionGet::Response> response);
     
+  
+  void get_irdata_service(const std::shared_ptr<wbr914_package::srv::IrdataGet::Request> request,
+        std::shared_ptr<wbr914_package::srv::IrdataGet::Response> response);
 
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr sub;
   rclcpp::Service<wbr914_package::srv::VelocityGet>::SharedPtr velocityGetService;
   rclcpp::Service<wbr914_package::srv::PositionGet>::SharedPtr positionGetService;
-  wbr914_minimal wbr914;
+  rclcpp::Service<wbr914_package::srv::IrdataGet>::SharedPtr irdataGetService;
+  wbr914_m3_io wbr914;
 };
